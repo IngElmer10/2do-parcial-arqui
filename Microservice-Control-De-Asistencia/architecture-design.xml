@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XMI xmi.version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.omg.org/spec/UML/20090901">
+  <uml:Model xmi:id="model_arch" name="Microservice Control de Asistencia - Arquitectura">
+    <ownedComment xmi:id="cmt_arch_overview" body="Arquitectura lógica de microservicios para el sistema de control de asistencia. Los componentes se comunican mediante APIs REST sobre HTTP/JSON."></ownedComment>
+    <packagedElement xmi:type="uml:Package" xmi:id="pkg_layers" name="Capas">
+      <packagedElement xmi:type="uml:Component" xmi:id="cmp_web_client" name="Cliente Web (HTML/CSS/JavaScript)">
+        <ownedComment xmi:id="cmt_client" body="Aplicación frontend que se ejecuta en el navegador y consume directamente los microservicios."></ownedComment>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Package" xmi:id="pkg_microservices" name="Microservicios Node.js">
+        <ownedComment xmi:id="cmt_microservices" body="Servicios independientes desarrollados con Node.js nativo (módulo http). Cada servicio expone una API REST y tiene su propia lógica de negocio."></ownedComment>
+        <packagedElement xmi:type="uml:Component" xmi:id="cmp_user_service" name="User Service">
+          <ownedComment xmi:id="cmt_user_service" body="Puerto 3001. Gestiona autenticación y ciclo de vida de usuarios (administradores, profesores, estudiantes)."/>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Component" xmi:id="cmp_catalog_service" name="Catalog Service">
+          <ownedComment xmi:id="cmt_catalog_service" body="Puerto 3002. Administra materias, grupos académicos, asignación de profesores y matrículas."/>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Component" xmi:id="cmp_attendance_service" name="Attendance Service">
+          <ownedComment xmi:id="cmt_attendance_service" body="Puerto 3003. Orquesta la creación de sesiones de asistencia y el registro de asistencias por estudiante."/>
+        </packagedElement>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Package" xmi:id="pkg_databases" name="Persistencia (MySQL)">
+        <ownedComment xmi:id="cmt_databases" body="Cada microservicio opera sobre un esquema dedicado en MySQL, reforzando el principio de independencia de datos."/>
+        <packagedElement xmi:type="uml:Component" xmi:id="cmp_users_db" name="Schema users_db">
+          <ownedComment xmi:id="cmt_users_db" body="Gestiona la información de usuarios, profesores, estudiantes y las inscripciones a grupos."/>
+          <appliedStereotype xmi:id="st_users_db" href="http://www.sparxsystems.com/profiles/standard#database"/>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Component" xmi:id="cmp_catalog_db" name="Schema catalog_db">
+          <ownedComment xmi:id="cmt_catalog_db" body="Almacena materias, grupos y la asignación de profesores."/>
+          <appliedStereotype xmi:id="st_catalog_db" href="http://www.sparxsystems.com/profiles/standard#database"/>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Component" xmi:id="cmp_attendance_db" name="Schema attendance_db">
+          <ownedComment xmi:id="cmt_attendance_db" body="Registra sesiones de asistencia y detalle por estudiante."/>
+          <appliedStereotype xmi:id="st_attendance_db" href="http://www.sparxsystems.com/profiles/standard#database"/>
+        </packagedElement>
+      </packagedElement>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_frontend_user" name="REST call" client="cmp_web_client" supplier="cmp_user_service">
+      <ownedComment xmi:id="cmt_dep_frontend_user" body="Solicitudes HTTP (JSON) para autenticación y gestión de usuarios sobre http://localhost:3001."/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_frontend_catalog" name="REST call" client="cmp_web_client" supplier="cmp_catalog_service">
+      <ownedComment xmi:id="cmt_dep_frontend_catalog" body="Solicitudes HTTP (JSON) para materias, grupos y matrículas sobre http://localhost:3002."/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_frontend_attendance" name="REST call" client="cmp_web_client" supplier="cmp_attendance_service">
+      <ownedComment xmi:id="cmt_dep_frontend_attendance" body="Solicitudes HTTP (JSON) para sesiones y registros de asistencia sobre http://localhost:3003."/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_user_db" name="Data Access" client="cmp_user_service" supplier="cmp_users_db">
+      <ownedComment xmi:id="cmt_dep_user_db" body="Conexión MySQL hacia el esquema users_db."/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_catalog_db" name="Data Access" client="cmp_catalog_service" supplier="cmp_catalog_db">
+      <ownedComment xmi:id="cmt_dep_catalog_db" body="Conexión MySQL hacia el esquema catalog_db."/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_attendance_db" name="Data Access" client="cmp_attendance_service" supplier="cmp_attendance_db">
+      <ownedComment xmi:id="cmt_dep_attendance_db" body="Conexión MySQL hacia el esquema attendance_db."/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_attendance_catalog" name="Consultar catálogos" client="cmp_attendance_service" supplier="cmp_catalog_service">
+      <ownedComment xmi:id="cmt_dep_attendance_catalog" body="El servicio de asistencia obtiene materias, grupos y matrículas desde Catalog Service para validar sesiones."/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_attendance_user" name="Validar usuarios" client="cmp_attendance_service" supplier="cmp_user_service">
+      <ownedComment xmi:id="cmt_dep_attendance_user" body="El servicio de asistencia valida credenciales y roles de profesores y estudiantes a través del User Service."/>
+    </packagedElement>
+  </uml:Model>
+</XMI>
