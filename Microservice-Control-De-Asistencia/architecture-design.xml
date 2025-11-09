@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XMI xmi.version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.omg.org/spec/UML/20090901">
+  <uml:Model xmi:id="model_arch" name="Microservice Control de Asistencia - Arquitectura">
+    <ownedComment xmi:id="cmt_overview" body="Vista de componentes de alto nivel que describe el frontend React, los microservicios Node.js y sus bases de datos MySQL dedicadas."/>
+    <packagedElement xmi:type="uml:Package" xmi:id="pkg_frontend" name="Frontend">
+      <ownedComment xmi:id="cmt_frontend" body="Aplicación SPA desarrollada con React y Vite. Consume APIs REST expuestas por los microservicios."/>
+      <packagedElement xmi:type="uml:Component" xmi:id="cmp_web_app" name="ControlAsistenciaSPA">
+        <ownedComment xmi:id="cmt_web_app" body="Gestiona autenticación, dashboards de profesor/estudiante y operaciones de registro de asistencia."/>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Component" xmi:id="cmp_api_client" name="ApiHttpClient">
+        <ownedComment xmi:id="cmt_api_client" body="Capa de comunicación que prepara peticiones HTTP, tokens y manejo de errores hacia los microservicios."/>
+      </packagedElement>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="pkg_microservices" name="Microservicios Node.js">
+      <ownedComment xmi:id="cmt_microservices" body="Servicios Express independientes que exponen contratos REST y encapsulan la lógica de negocio."/>
+      <packagedElement xmi:type="uml:Component" xmi:id="cmp_attendance_service" name="attendance-service">
+        <ownedComment xmi:id="cmt_attendance_service" body="Administra sesiones de asistencia, genera reportes y coordina validaciones con catálogos y usuarios."/>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Component" xmi:id="cmp_catalog_service" name="catalog-service">
+        <ownedComment xmi:id="cmt_catalog_service" body="Mantiene materias, grupos y asignaciones académicas expuestas al resto de la plataforma."/>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Component" xmi:id="cmp_user_service" name="user-service">
+        <ownedComment xmi:id="cmt_user_service" body="Gestiona usuarios, profesores, estudiantes y sus credenciales de autenticación."/>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Component" xmi:id="cmp_auth_service" name="AuthMiddleware">
+        <ownedComment xmi:id="cmt_auth_service" body="Middleware compartido que valida tokens JWT emitidos por user-service."/>
+      </packagedElement>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="pkg_databases" name="Bases de Datos MySQL">
+      <ownedComment xmi:id="cmt_databases" body="Cada microservicio opera sobre un esquema MySQL aislado para favorecer la autonomía de despliegue."/>
+      <packagedElement xmi:type="uml:Component" xmi:id="cmp_db_attendance" name="attendance_db">
+        <ownedComment xmi:id="cmt_db_attendance" body="Esquema dedicado al registro de sesiones y asistencias."/>
+        <appliedStereotype xmi:id="st_attendance_db" href="http://www.sparxsystems.com/profiles/standard#database"/>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Component" xmi:id="cmp_db_catalog" name="catalog_db">
+        <ownedComment xmi:id="cmt_db_catalog" body="Esquema dedicado a catálogos académicos de materias y grupos."/>
+        <appliedStereotype xmi:id="st_catalog_db" href="http://www.sparxsystems.com/profiles/standard#database"/>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Component" xmi:id="cmp_db_users" name="users_db">
+        <ownedComment xmi:id="cmt_db_users" body="Esquema dedicado a identidades, credenciales y perfiles de usuario."/>
+        <appliedStereotype xmi:id="st_users_db" href="http://www.sparxsystems.com/profiles/standard#database"/>
+      </packagedElement>
+    </packagedElement>
+    <!-- Dependencias Frontend -->
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_spa_api" client="cmp_web_app" supplier="cmp_api_client" name="Usa"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_api_attendance" client="cmp_api_client" supplier="cmp_attendance_service" name="REST/JSON"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_api_catalog" client="cmp_api_client" supplier="cmp_catalog_service" name="REST/JSON"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_api_user" client="cmp_api_client" supplier="cmp_user_service" name="REST/JSON"/>
+    <!-- Integraciones entre microservicios -->
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_attendance_catalog" client="cmp_attendance_service" supplier="cmp_catalog_service" name="Consulta catálogos"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_attendance_user" client="cmp_attendance_service" supplier="cmp_user_service" name="Consulta usuarios"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_catalog_auth" client="cmp_catalog_service" supplier="cmp_auth_service" name="Valida token"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_attendance_auth" client="cmp_attendance_service" supplier="cmp_auth_service" name="Valida token"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_user_auth" client="cmp_user_service" supplier="cmp_auth_service" name="Emite tokens"/>
+    <!-- Persistencia -->
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_attendance_db" client="cmp_attendance_service" supplier="cmp_db_attendance" name="ORM/Queries"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_catalog_db" client="cmp_catalog_service" supplier="cmp_db_catalog" name="ORM/Queries"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_user_db" client="cmp_user_service" supplier="cmp_db_users" name="ORM/Queries"/>
+  </uml:Model>
+</XMI>

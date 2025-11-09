@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XMI xmi.version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.omg.org/spec/UML/20090901">
+  <uml:Model xmi:id="model_strategy" name="Microservice Control de Asistencia - Strategy">
+    <ownedComment xmi:id="cmt_strategy_overview" body="Diagrama de detalle procedimental del uso del patrón Strategy para exportar sesiones de asistencia desde el componente SessionHistory del frontend."/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_string" name="String"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_integer" name="Integer"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_boolean" name="Boolean"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_session_summary" name="SessionSummary">
+      <ownedAttribute xmi:id="attr_summary_id" name="id" type="type_integer"/>
+      <ownedAttribute xmi:id="attr_summary_subject" name="subject_name" type="type_string"/>
+      <ownedAttribute xmi:id="attr_summary_group" name="group_code" type="type_string"/>
+      <ownedAttribute xmi:id="attr_summary_date" name="session_date" type="type_string"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_attendance_record" name="AttendanceRecord">
+      <ownedAttribute xmi:id="attr_record_student_id" name="student_id" type="type_integer"/>
+      <ownedAttribute xmi:id="attr_record_student_name" name="student_name" type="type_string"/>
+      <ownedAttribute xmi:id="attr_record_status" name="status" type="type_string"/>
+      <ownedAttribute xmi:id="attr_record_recorded" name="recorded_at" type="type_string"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_export_options" name="ExportOptions">
+      <ownedAttribute xmi:id="attr_opt_title" name="title" type="type_string"/>
+      <ownedAttribute xmi:id="attr_opt_filename" name="filename" type="type_string"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_export_payload" name="AttendanceExportPayload">
+      <ownedAttribute xmi:id="attr_payload_session" name="session" type="cls_session_summary"/>
+      <ownedAttribute xmi:id="attr_payload_records" name="records" type="cls_attendance_record" lower="0" upper="*"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_export_context" name="AttendanceExportContext">
+      <ownedAttribute xmi:id="attr_context_strategy" name="strategy" type="cls_export_strategy" visibility="private"/>
+      <ownedOperation xmi:id="op_context_constructor" name="AttendanceExportContext">
+        <ownedParameter xmi:id="param_context_ctor_strategy" name="strategy" type="cls_export_strategy"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_context_set" name="setStrategy">
+        <ownedParameter xmi:id="param_context_set_strategy" name="strategy" type="cls_export_strategy" direction="in"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_context_export" name="export">
+        <ownedParameter xmi:id="param_context_export_data" name="data" type="cls_export_payload" direction="in"/>
+        <ownedParameter xmi:id="param_context_export_options" name="options" type="cls_export_options" direction="in"/>
+      </ownedOperation>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_export_strategy" name="AttendanceExportStrategy" isAbstract="true">
+      <ownedOperation xmi:id="op_strategy_export" name="export">
+        <ownedParameter xmi:id="param_strategy_export_data" name="data" type="cls_export_payload" direction="in"/>
+        <ownedParameter xmi:id="param_strategy_export_options" name="options" type="cls_export_options" direction="in"/>
+      </ownedOperation>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_pdf_strategy" name="PdfExportStrategy">
+      <generalization xmi:id="gen_pdf_strategy" general="cls_export_strategy"/>
+      <ownedOperation xmi:id="op_pdf_export" name="export">
+        <ownedParameter xmi:id="param_pdf_export_data" name="data" type="cls_export_payload" direction="in"/>
+        <ownedParameter xmi:id="param_pdf_export_options" name="options" type="cls_export_options" direction="in"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_pdf_build_filename" name="buildFilename">
+        <ownedParameter xmi:id="param_pdf_filename_session" name="session" type="cls_session_summary" direction="in"/>
+        <ownedParameter xmi:id="param_pdf_filename_extension" name="extension" type="type_string" direction="in"/>
+        <ownedParameter xmi:id="param_pdf_filename_return" direction="return" type="type_string"/>
+      </ownedOperation>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_csv_strategy" name="CsvExportStrategy">
+      <generalization xmi:id="gen_csv_strategy" general="cls_export_strategy"/>
+      <ownedOperation xmi:id="op_csv_export" name="export">
+        <ownedParameter xmi:id="param_csv_export_data" name="data" type="cls_export_payload" direction="in"/>
+        <ownedParameter xmi:id="param_csv_export_options" name="options" type="cls_export_options" direction="in"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_csv_trigger" name="triggerDownload">
+        <ownedParameter xmi:id="param_csv_trigger_blob" name="blob" type="type_string" direction="in"/>
+        <ownedParameter xmi:id="param_csv_trigger_filename" name="filename" type="type_string" direction="in"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_csv_build_filename" name="buildFilename">
+        <ownedParameter xmi:id="param_csv_filename_session" name="session" type="cls_session_summary" direction="in"/>
+        <ownedParameter xmi:id="param_csv_filename_extension" name="extension" type="type_string" direction="in"/>
+        <ownedParameter xmi:id="param_csv_filename_return" direction="return" type="type_string"/>
+      </ownedOperation>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_excel_strategy" name="ExcelExportStrategy">
+      <generalization xmi:id="gen_excel_strategy" general="cls_export_strategy"/>
+      <ownedOperation xmi:id="op_excel_export" name="export">
+        <ownedParameter xmi:id="param_excel_export_data" name="data" type="cls_export_payload" direction="in"/>
+        <ownedParameter xmi:id="param_excel_export_options" name="options" type="cls_export_options" direction="in"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_excel_build_filename" name="buildFilename">
+        <ownedParameter xmi:id="param_excel_filename_session" name="session" type="cls_session_summary" direction="in"/>
+        <ownedParameter xmi:id="param_excel_filename_extension" name="extension" type="type_string" direction="in"/>
+        <ownedParameter xmi:id="param_excel_filename_return" direction="return" type="type_string"/>
+      </ownedOperation>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_session_history" name="SessionHistory">
+      <ownedAttribute xmi:id="attr_history_export_context" name="exportContext" type="cls_export_context"/>
+      <ownedAttribute xmi:id="attr_history_export_strategies" name="exportStrategies" type="cls_export_strategy" lower="1" upper="*"/>
+      <ownedAttribute xmi:id="attr_history_session_details" name="sessionDetails" type="cls_export_payload"/>
+      <ownedOperation xmi:id="op_history_build_payload" name="buildExportPayload">
+        <ownedParameter xmi:id="param_history_payload_return" direction="return" type="cls_export_payload"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_history_handle_export" name="handleExport">
+        <ownedParameter xmi:id="param_history_handle_format" name="format" type="type_string" direction="in"/>
+      </ownedOperation>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Activity" xmi:id="act_strategy" name="Exportar asistencia (Strategy)">
+      <node xmi:type="uml:InitialNode" xmi:id="node_strategy_init" name="Inicio">
+        <outgoing>flow_init_handle</outgoing>
+      </node>
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_handle_export" name="SessionHistory.handleExport(format)" operation="op_history_handle_export">
+        <ownedComment xmi:id="cmt_handle_export" body="El usuario selecciona un formato (pdf, csv, excel) y se arma el payload con la sesión y los registros."/>
+        <target xmi:type="uml:InputPin" xmi:id="pin_handle_target" name="sessionHistory" type="cls_session_history"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_handle_format" name="format" type="type_string"/>
+        <result xmi:type="uml:OutputPin" xmi:id="pin_handle_payload" name="payload" type="cls_export_payload"/>
+        <incoming>flow_init_handle</incoming>
+        <outgoing>flow_handle_context</outgoing>
+      </node>
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_context_set" name="AttendanceExportContext.setStrategy(strategy)" operation="op_context_set">
+        <ownedComment xmi:id="cmt_context_set" body="El contexto recibe la estrategia concreta correspondiente al formato elegido."/>
+        <target xmi:type="uml:InputPin" xmi:id="pin_context_target" name="exportContext" type="cls_export_context"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_context_strategy" name="strategy" type="cls_export_strategy"/>
+        <incoming>flow_handle_context</incoming>
+        <outgoing>flow_context_export</outgoing>
+      </node>
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_context_export" name="AttendanceExportContext.export(data, options)" operation="op_context_export">
+        <ownedComment xmi:id="cmt_context_export" body="Valida que exista estrategia activa y delega la exportación llamando strategy.export(data, options)."/>
+        <target xmi:type="uml:InputPin" xmi:id="pin_context_export_target" name="exportContext" type="cls_export_context"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_context_export_data" name="data" type="cls_export_payload"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_context_export_options" name="options" type="cls_export_options"/>
+        <incoming>flow_context_export</incoming>
+        <outgoing>flow_export_decision</outgoing>
+      </node>
+      <node xmi:type="uml:DecisionNode" xmi:id="node_strategy_decision" name="¿Formato seleccionado?">
+        <incoming>flow_export_decision</incoming>
+        <outgoing>flow_decision_pdf</outgoing>
+        <outgoing>flow_decision_csv</outgoing>
+        <outgoing>flow_decision_excel</outgoing>
+      </node>
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_pdf_strategy" name="PdfExportStrategy.export(data, options)" operation="op_pdf_export">
+        <ownedComment xmi:id="cmt_pdf_strategy" body="Construye un documento jsPDF con encabezados, lista de estudiantes y guarda el archivo .pdf."/>
+        <target xmi:type="uml:InputPin" xmi:id="pin_pdf_target" name="pdfStrategy" type="cls_pdf_strategy"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_pdf_data" name="data" type="cls_export_payload"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_pdf_options" name="options" type="cls_export_options"/>
+        <incoming>flow_decision_pdf</incoming>
+        <outgoing>flow_pdf_merge</outgoing>
+      </node>
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_csv_strategy" name="CsvExportStrategy.export(data, options)" operation="op_csv_export">
+        <ownedComment xmi:id="cmt_csv_strategy" body="Genera contenido CSV a partir de los registros, crea un Blob y dispara la descarga del archivo .csv."/>
+        <target xmi:type="uml:InputPin" xmi:id="pin_csv_target" name="csvStrategy" type="cls_csv_strategy"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_csv_data" name="data" type="cls_export_payload"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_csv_options" name="options" type="cls_export_options"/>
+        <incoming>flow_decision_csv</incoming>
+        <outgoing>flow_csv_merge</outgoing>
+      </node>
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_excel_strategy" name="ExcelExportStrategy.export(data, options)" operation="op_excel_export">
+        <ownedComment xmi:id="cmt_excel_strategy" body="Construye un workbook XLSX con los datos de asistencia y escribe el archivo .xlsx."/>
+        <target xmi:type="uml:InputPin" xmi:id="pin_excel_target" name="excelStrategy" type="cls_excel_strategy"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_excel_data" name="data" type="cls_export_payload"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_excel_options" name="options" type="cls_export_options"/>
+        <incoming>flow_decision_excel</incoming>
+        <outgoing>flow_excel_merge</outgoing>
+      </node>
+      <node xmi:type="uml:MergeNode" xmi:id="node_strategy_merge" name="Descarga generada">
+        <incoming>flow_pdf_merge</incoming>
+        <incoming>flow_csv_merge</incoming>
+        <incoming>flow_excel_merge</incoming>
+        <outgoing>flow_merge_final</outgoing>
+      </node>
+      <node xmi:type="uml:ActivityFinalNode" xmi:id="node_strategy_final" name="Fin">
+        <incoming>flow_merge_final</incoming>
+      </node>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_init_handle" source="node_strategy_init" target="node_handle_export"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_handle_context" source="node_handle_export" target="node_context_set"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_context_export" source="node_context_set" target="node_context_export"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_export_decision" source="node_context_export" target="node_strategy_decision"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_decision_pdf" name="pdf" source="node_strategy_decision" target="node_pdf_strategy">
+        <guard xmi:type="uml:LiteralString" xmi:id="guard_pdf" value="strategy === 'pdf'"/>
+      </edge>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_decision_csv" name="csv" source="node_strategy_decision" target="node_csv_strategy">
+        <guard xmi:type="uml:LiteralString" xmi:id="guard_csv" value="strategy === 'csv'"/>
+      </edge>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_decision_excel" name="excel" source="node_strategy_decision" target="node_excel_strategy">
+        <guard xmi:type="uml:LiteralString" xmi:id="guard_excel" value="strategy === 'excel'"/>
+      </edge>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_pdf_merge" source="node_pdf_strategy" target="node_strategy_merge"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_csv_merge" source="node_csv_strategy" target="node_strategy_merge"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_excel_merge" source="node_excel_strategy" target="node_strategy_merge"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_merge_final" source="node_strategy_merge" target="node_strategy_final"/>
+    </packagedElement>
+  </uml:Model>
+</XMI>

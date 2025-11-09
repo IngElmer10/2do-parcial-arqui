@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XMI xmi.version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.omg.org/spec/UML/20090901">
+  <uml:Model xmi:id="model_users_db" name="users_db schema">
+    <ownedComment xmi:id="cmt_users_db_model" body="Modelo lógico del esquema users_db gestionado por el microservicio de usuarios."/>
+    <!-- Tipos básicos -->
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_INT" name="INT"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_VARCHAR" name="VARCHAR"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_BOOLEAN" name="BOOLEAN"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_TIMESTAMP" name="TIMESTAMP"/>
+    <!-- Tablas -->
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_users" name="users">
+      <ownedComment xmi:id="cmt_cls_users" body="Usuarios autenticables de la plataforma."/>
+      <ownedAttribute xmi:id="attr_users_id" name="id" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_users_username" name="username" type="type_VARCHAR"/>
+      <ownedAttribute xmi:id="attr_users_password" name="password_hash" type="type_VARCHAR"/>
+      <ownedAttribute xmi:id="attr_users_email" name="email" type="type_VARCHAR"/>
+      <ownedAttribute xmi:id="attr_users_fullname" name="full_name" type="type_VARCHAR"/>
+      <ownedAttribute xmi:id="attr_users_role" name="role" type="type_VARCHAR"/>
+      <ownedAttribute xmi:id="attr_users_is_active" name="is_active" type="type_BOOLEAN"/>
+      <ownedAttribute xmi:id="attr_users_created" name="created_at" type="type_TIMESTAMP"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_professors" name="professors">
+      <ownedComment xmi:id="cmt_cls_professors" body="Información complementaria para profesores."/>
+      <ownedAttribute xmi:id="attr_professors_id" name="id" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_professors_user_id" name="user_id" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_professors_employee" name="employee_code" type="type_VARCHAR"/>
+      <ownedAttribute xmi:id="attr_professors_department" name="department" type="type_VARCHAR"/>
+      <ownedAttribute xmi:id="attr_professors_is_active" name="is_active" type="type_BOOLEAN"/>
+      <ownedAttribute xmi:id="attr_professors_created" name="created_at" type="type_TIMESTAMP"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_students" name="students">
+      <ownedComment xmi:id="cmt_cls_students" body="Perfiles académicos asociados a un usuario tipo estudiante."/>
+      <ownedAttribute xmi:id="attr_students_id" name="id" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_students_user_id" name="user_id" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_students_code" name="student_code" type="type_VARCHAR"/>
+      <ownedAttribute xmi:id="attr_students_career" name="career" type="type_VARCHAR"/>
+      <ownedAttribute xmi:id="attr_students_is_active" name="is_active" type="type_BOOLEAN"/>
+      <ownedAttribute xmi:id="attr_students_created" name="created_at" type="type_TIMESTAMP"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_group_enrollments" name="group_enrollments">
+      <ownedComment xmi:id="cmt_cls_group_enrollments" body="Matrículas de estudiantes en grupos académicos."/>
+      <ownedAttribute xmi:id="attr_enrollments_id" name="id" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_enrollments_group_id" name="group_id" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_enrollments_student_id" name="student_id" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_enrollments_status" name="status" type="type_VARCHAR"/>
+      <ownedAttribute xmi:id="attr_enrollments_enrolled_at" name="enrolled_at" type="type_TIMESTAMP"/>
+    </packagedElement>
+    <!-- Relaciones -->
+    <packagedElement xmi:type="uml:Association" xmi:id="assoc_professors_users">
+      <ownedEnd xmi:id="end_professors" type="cls_professors" association="assoc_professors_users">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="lit_professors_upper" value="*"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="lit_professors_lower" value="0"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="end_users_for_professors" type="cls_users" association="assoc_professors_users" name="fk_user">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="lit_users_professors_upper" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="lit_users_professors_lower" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="assoc_students_users">
+      <ownedEnd xmi:id="end_students" type="cls_students" association="assoc_students_users">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="lit_students_upper" value="*"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="lit_students_lower" value="0"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="end_users_for_students" type="cls_users" association="assoc_students_users" name="fk_user">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="lit_users_students_upper" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="lit_users_students_lower" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="assoc_enrollments_students">
+      <ownedEnd xmi:id="end_enrollments" type="cls_group_enrollments" association="assoc_enrollments_students">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="lit_enrollments_upper" value="*"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="lit_enrollments_lower" value="0"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="end_students_for_enrollments" type="cls_students" association="assoc_enrollments_students" name="fk_student">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="lit_students_enrollments_upper" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="lit_students_enrollments_lower" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+  </uml:Model>
+</XMI>

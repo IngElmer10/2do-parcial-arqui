@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XMI xmi.version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.omg.org/spec/UML/20090901">
+  <uml:Model xmi:id="model_attendance_db" name="attendance_db schema">
+    <ownedComment xmi:id="cmt_attendance_db_model" body="Modelo lógico del esquema attendance_db utilizado por el servicio de asistencia."/>
+    <!-- Tipos básicos -->
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_INT" name="INT"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_VARCHAR" name="VARCHAR"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_BOOLEAN" name="BOOLEAN"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_ENUM" name="ENUM"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_DATE" name="DATE"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_TIME" name="TIME"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_TIMESTAMP" name="TIMESTAMP"/>
+    <!-- Tablas -->
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_attendance_sessions" name="attendance_sessions">
+      <ownedComment xmi:id="cmt_cls_attendance_sessions" body="Sesiones programadas para un grupo y profesor."/>
+      <ownedAttribute xmi:id="attr_sessions_id" name="id" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_sessions_group_id" name="group_id" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_sessions_subject_id" name="subject_id" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_sessions_professor_id" name="professor_id" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_sessions_session_date" name="session_date" type="type_DATE"/>
+      <ownedAttribute xmi:id="attr_sessions_start_time" name="start_time" type="type_TIME"/>
+      <ownedAttribute xmi:id="attr_sessions_end_time" name="end_time" type="type_TIME"/>
+      <ownedAttribute xmi:id="attr_sessions_status" name="status" type="type_ENUM"/>
+      <ownedAttribute xmi:id="attr_sessions_session_type" name="session_type" type="type_ENUM"/>
+      <ownedAttribute xmi:id="attr_sessions_exam_title" name="exam_title" type="type_VARCHAR"/>
+      <ownedAttribute xmi:id="attr_sessions_exam_duration" name="exam_duration_minutes" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_sessions_exam_is_strict" name="exam_is_strict" type="type_BOOLEAN"/>
+      <ownedAttribute xmi:id="attr_sessions_created" name="created_at" type="type_TIMESTAMP"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_attendance_records" name="attendance_records">
+      <ownedComment xmi:id="cmt_cls_attendance_records" body="Detalle de asistencia por estudiante y sesión."/>
+      <ownedAttribute xmi:id="attr_records_id" name="id" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_records_session_id" name="session_id" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_records_student_id" name="student_id" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_records_status" name="status" type="type_ENUM"/>
+      <ownedAttribute xmi:id="attr_records_recorded_at" name="recorded_at" type="type_TIMESTAMP"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_attendance_record_audit" name="attendance_record_audit">
+      <ownedComment xmi:id="cmt_cls_attendance_record_audit" body="Auditoría de cambios sobre registros de asistencia."/>
+      <ownedAttribute xmi:id="attr_audit_id" name="id" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_audit_record_id" name="record_id" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_audit_action" name="action" type="type_VARCHAR"/>
+      <ownedAttribute xmi:id="attr_audit_changed_at" name="changed_at" type="type_TIMESTAMP"/>
+    </packagedElement>
+    <!-- Relaciones -->
+    <packagedElement xmi:type="uml:Association" xmi:id="assoc_records_sessions">
+      <ownedEnd xmi:id="end_records" type="cls_attendance_records" association="assoc_records_sessions">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="lit_records_upper" value="*"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="lit_records_lower" value="0"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="end_sessions" type="cls_attendance_sessions" association="assoc_records_sessions" name="fk_session">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="lit_sessions_upper" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="lit_sessions_lower" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="assoc_audit_records">
+      <ownedEnd xmi:id="end_audit" type="cls_attendance_record_audit" association="assoc_audit_records">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="lit_audit_upper" value="*"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="lit_audit_lower" value="0"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="end_records_for_audit" type="cls_attendance_records" association="assoc_audit_records" name="fk_record">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="lit_records_audit_upper" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="lit_records_audit_lower" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+  </uml:Model>
+</XMI>

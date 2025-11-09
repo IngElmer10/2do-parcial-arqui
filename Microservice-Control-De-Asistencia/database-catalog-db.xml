@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XMI xmi.version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.omg.org/spec/UML/20090901">
+  <uml:Model xmi:id="model_catalog_db" name="catalog_db schema">
+    <ownedComment xmi:id="cmt_catalog_db_model" body="Modelo lógico del esquema catalog_db mantenido por el servicio de catálogos."/>
+    <!-- Tipos básicos -->
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_INT" name="INT"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_VARCHAR" name="VARCHAR"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_TEXT" name="TEXT"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_BOOLEAN" name="BOOLEAN"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_TIMESTAMP" name="TIMESTAMP"/>
+    <!-- Tablas -->
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_subjects" name="subjects">
+      <ownedComment xmi:id="cmt_cls_subjects" body="Catálogo de materias ofertadas."/>
+      <ownedAttribute xmi:id="attr_subjects_id" name="id" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_subjects_code" name="code" type="type_VARCHAR"/>
+      <ownedAttribute xmi:id="attr_subjects_name" name="name" type="type_VARCHAR"/>
+      <ownedAttribute xmi:id="attr_subjects_description" name="description" type="type_TEXT"/>
+      <ownedAttribute xmi:id="attr_subjects_created" name="created_at" type="type_TIMESTAMP"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_groups" name="groups">
+      <ownedComment xmi:id="cmt_cls_groups" body="Grupos por materia y periodo."/>
+      <ownedAttribute xmi:id="attr_groups_id" name="id" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_groups_subject_id" name="subject_id" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_groups_code" name="code" type="type_VARCHAR"/>
+      <ownedAttribute xmi:id="attr_groups_name" name="name" type="type_VARCHAR"/>
+      <ownedAttribute xmi:id="attr_groups_term" name="term" type="type_VARCHAR"/>
+      <ownedAttribute xmi:id="attr_groups_description" name="description" type="type_TEXT"/>
+      <ownedAttribute xmi:id="attr_groups_is_active" name="is_active" type="type_BOOLEAN"/>
+      <ownedAttribute xmi:id="attr_groups_created" name="created_at" type="type_TIMESTAMP"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_group_professors" name="group_professors">
+      <ownedComment xmi:id="cmt_cls_group_professors" body="Asignaciones de profesores a grupos."/>
+      <ownedAttribute xmi:id="attr_group_professors_id" name="id" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_group_professors_group_id" name="group_id" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_group_professors_professor_id" name="professor_id" type="type_INT"/>
+      <ownedAttribute xmi:id="attr_group_professors_assigned" name="assigned_at" type="type_TIMESTAMP"/>
+    </packagedElement>
+    <!-- Relaciones -->
+    <packagedElement xmi:type="uml:Association" xmi:id="assoc_groups_subjects">
+      <ownedEnd xmi:id="end_groups" type="cls_groups" association="assoc_groups_subjects">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="lit_groups_upper" value="*"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="lit_groups_lower" value="0"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="end_subjects" type="cls_subjects" association="assoc_groups_subjects" name="fk_subject">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="lit_subjects_upper" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="lit_subjects_lower" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="assoc_group_professors_groups">
+      <ownedEnd xmi:id="end_group_professors" type="cls_group_professors" association="assoc_group_professors_groups">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="lit_group_professors_upper" value="*"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="lit_group_professors_lower" value="0"/>
+      </ownedEnd>
+      <ownedEnd xmi:id="end_groups_for_group_professors" type="cls_groups" association="assoc_group_professors_groups" name="fk_group">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="lit_groups_group_professors_upper" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="lit_groups_group_professors_lower" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+  </uml:Model>
+</XMI>
