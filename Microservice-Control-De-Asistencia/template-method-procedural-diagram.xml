@@ -2,41 +2,313 @@
 <XMI xmi.version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.omg.org/spec/UML/20090901">
   <uml:Model xmi:id="model_template" name="Microservice Control de Asistencia - Template Method">
     <ownedComment xmi:id="cmt_template_overview" body="Diagrama de detalle procedimental del método plantilla createSession dentro de BaseAttendanceSessionTemplate y sus extensiones Normal y Exam."/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_string" name="String"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_integer" name="Integer"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_boolean" name="Boolean"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_group_summary" name="GroupSummary">
+      <ownedAttribute xmi:id="attr_group_id" name="id" type="type_integer"/>
+      <ownedAttribute xmi:id="attr_group_subject" name="subject_id" type="type_integer"/>
+      <ownedAttribute xmi:id="attr_group_default_start" name="default_start_time" type="type_string"/>
+      <ownedAttribute xmi:id="attr_group_default_end" name="default_end_time" type="type_string"/>
+      <ownedAttribute xmi:id="attr_group_active" name="is_active" type="type_boolean"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_enrollment" name="GroupEnrollment">
+      <ownedAttribute xmi:id="attr_enrollment_student" name="student_id" type="type_integer"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_normalized_session" name="NormalizedSessionData">
+      <ownedAttribute xmi:id="attr_norm_group" name="group_id" type="type_integer"/>
+      <ownedAttribute xmi:id="attr_norm_professor" name="professor_id" type="type_integer"/>
+      <ownedAttribute xmi:id="attr_norm_type" name="session_type" type="type_string"/>
+      <ownedAttribute xmi:id="attr_norm_date" name="session_date" type="type_string"/>
+      <ownedAttribute xmi:id="attr_norm_start" name="start_time" type="type_string"/>
+      <ownedAttribute xmi:id="attr_norm_end" name="end_time" type="type_string"/>
+      <ownedAttribute xmi:id="attr_norm_exam_title" name="exam_title" type="type_string"/>
+      <ownedAttribute xmi:id="attr_norm_exam_duration" name="exam_duration_minutes" type="type_integer"/>
+      <ownedAttribute xmi:id="attr_norm_exam_strict" name="exam_is_strict" type="type_boolean"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_session_payload" name="AttendanceSessionPayload">
+      <ownedAttribute xmi:id="attr_payload_group" name="group_id" type="type_integer"/>
+      <ownedAttribute xmi:id="attr_payload_subject" name="subject_id" type="type_integer"/>
+      <ownedAttribute xmi:id="attr_payload_professor" name="professor_id" type="type_integer"/>
+      <ownedAttribute xmi:id="attr_payload_date" name="session_date" type="type_string"/>
+      <ownedAttribute xmi:id="attr_payload_start" name="start_time" type="type_string"/>
+      <ownedAttribute xmi:id="attr_payload_end" name="end_time" type="type_string"/>
+      <ownedAttribute xmi:id="attr_payload_status" name="status" type="type_string"/>
+      <ownedAttribute xmi:id="attr_payload_type" name="session_type" type="type_string"/>
+      <ownedAttribute xmi:id="attr_payload_exam_title" name="exam_title" type="type_string"/>
+      <ownedAttribute xmi:id="attr_payload_exam_duration" name="exam_duration_minutes" type="type_integer"/>
+      <ownedAttribute xmi:id="attr_payload_exam_strict" name="exam_is_strict" type="type_boolean"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_preparation_summary" name="PreparationSummary">
+      <ownedAttribute xmi:id="attr_summary_session" name="session_id" type="type_integer"/>
+      <ownedAttribute xmi:id="attr_summary_total" name="total_students" type="type_integer"/>
+      <ownedAttribute xmi:id="attr_summary_notes" name="notes" type="type_string"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_session_detail" name="AttendanceSessionDetail">
+      <ownedAttribute xmi:id="attr_detail_id" name="id" type="type_integer"/>
+      <ownedAttribute xmi:id="attr_detail_type" name="session_type" type="type_string"/>
+      <ownedAttribute xmi:id="attr_detail_exam_title" name="exam_title" type="type_string"/>
+      <ownedAttribute xmi:id="attr_detail_exam_duration" name="exam_duration_minutes" type="type_integer"/>
+      <ownedAttribute xmi:id="attr_detail_exam_strict" name="exam_is_strict" type="type_boolean"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_attendance_session" name="AttendanceSession">
+      <ownedAttribute xmi:id="attr_session_id" name="id" type="type_integer"/>
+      <ownedAttribute xmi:id="attr_session_group" name="group_id" type="type_integer"/>
+      <ownedAttribute xmi:id="attr_session_subject" name="subject_id" type="type_integer"/>
+      <ownedAttribute xmi:id="attr_session_professor" name="professor_id" type="type_integer"/>
+      <ownedAttribute xmi:id="attr_session_date" name="session_date" type="type_string"/>
+      <ownedAttribute xmi:id="attr_session_start" name="start_time" type="type_string"/>
+      <ownedAttribute xmi:id="attr_session_end" name="end_time" type="type_string"/>
+      <ownedAttribute xmi:id="attr_session_status" name="status" type="type_string"/>
+      <ownedAttribute xmi:id="attr_session_type" name="session_type" type="type_string"/>
+      <ownedAttribute xmi:id="attr_session_exam_title" name="exam_title" type="type_string"/>
+      <ownedAttribute xmi:id="attr_session_exam_duration" name="exam_duration_minutes" type="type_integer"/>
+      <ownedAttribute xmi:id="attr_session_exam_strict" name="exam_is_strict" type="type_boolean"/>
+      <ownedOperation xmi:id="op_attendance_session_constructor" name="AttendanceSession">
+        <ownedParameter xmi:id="param_attendance_session_payload" name="payload" type="cls_session_payload" direction="in"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_attendance_session_validate" name="validate"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_session_repository" name="AttendanceSessionRepository">
+      <ownedOperation xmi:id="op_session_repo_insert" name="insert">
+        <ownedParameter xmi:id="param_session_repo_payload" name="payload" type="cls_session_payload" direction="in"/>
+        <ownedParameter xmi:id="param_session_repo_return" direction="return" type="type_integer"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_session_repo_find" name="findByGroupAndDate">
+        <ownedParameter xmi:id="param_session_repo_group" name="groupId" type="type_integer" direction="in"/>
+        <ownedParameter xmi:id="param_session_repo_date" name="sessionDate" type="type_string" direction="in"/>
+        <ownedParameter xmi:id="param_session_repo_existing" direction="return" type="cls_attendance_session"/>
+      </ownedOperation>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_record_repository" name="AttendanceRecordRepository">
+      <ownedOperation xmi:id="op_record_repo_bulk" name="bulkInsert">
+        <ownedParameter xmi:id="param_record_repo_records" name="records" type="cls_record_batch" direction="in"/>
+      </ownedOperation>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_record_batch" name="AttendanceRecord">
+      <ownedAttribute xmi:id="attr_record_session_id" name="session_id" type="type_integer"/>
+      <ownedAttribute xmi:id="attr_record_student_id" name="student_id" type="type_integer"/>
+      <ownedAttribute xmi:id="attr_record_status" name="status" type="type_string"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_user_client" name="UserClient">
+      <ownedOperation xmi:id="op_user_validate_professor" name="validateProfessor">
+        <ownedParameter xmi:id="param_user_professor" name="professorId" type="type_integer" direction="in"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_user_get_enrollments" name="getGroupEnrollments">
+        <ownedParameter xmi:id="param_user_group" name="groupId" type="type_integer" direction="in"/>
+        <ownedParameter xmi:id="param_user_enrollments" direction="return" type="cls_enrollment" lower="0" upper="*"/>
+      </ownedOperation>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_catalog_client" name="CatalogClient">
+      <ownedOperation xmi:id="op_catalog_get_group" name="getGroupById">
+        <ownedParameter xmi:id="param_catalog_group" name="groupId" type="type_integer" direction="in"/>
+        <ownedParameter xmi:id="param_catalog_group_return" direction="return" type="cls_group_summary"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_catalog_is_assigned" name="isProfessorAssignedToGroup">
+        <ownedParameter xmi:id="param_catalog_professor" name="professorId" type="type_integer" direction="in"/>
+        <ownedParameter xmi:id="param_catalog_group_assignment" name="groupId" type="type_integer" direction="in"/>
+        <ownedParameter xmi:id="param_catalog_assignment_return" direction="return" type="type_boolean"/>
+      </ownedOperation>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_date_utils" name="DateUtils">
+      <ownedOperation xmi:id="op_date_current" name="getCurrentDate">
+        <ownedParameter xmi:id="param_date_current_return" direction="return" type="type_string"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_date_valid" name="isValidDate">
+        <ownedParameter xmi:id="param_date_valid_input" name="date" type="type_string" direction="in"/>
+        <ownedParameter xmi:id="param_date_valid_return" direction="return" type="type_boolean"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_date_valid_time" name="isValidTime">
+        <ownedParameter xmi:id="param_date_valid_time" name="time" type="type_string" direction="in"/>
+        <ownedParameter xmi:id="param_date_valid_time_return" direction="return" type="type_boolean"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_date_difference" name="differenceInMinutes">
+        <ownedParameter xmi:id="param_date_start" name="startTime" type="type_string" direction="in"/>
+        <ownedParameter xmi:id="param_date_end" name="endTime" type="type_string" direction="in"/>
+        <ownedParameter xmi:id="param_date_difference_return" direction="return" type="type_integer"/>
+      </ownedOperation>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_detail_fetcher" name="AttendanceSessionDetailFetcher">
+      <ownedOperation xmi:id="op_detail_fetcher" name="call">
+        <ownedParameter xmi:id="param_detail_fetcher_session" name="sessionId" type="type_integer" direction="in"/>
+        <ownedParameter xmi:id="param_detail_fetcher_return" direction="return" type="cls_session_detail"/>
+      </ownedOperation>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_attendance_service" name="AttendanceService">
+      <ownedOperation xmi:id="op_service_resolve" name="resolveSessionTemplate">
+        <ownedParameter xmi:id="param_service_type" name="sessionType" type="type_string" direction="in"/>
+        <ownedParameter xmi:id="param_service_return" direction="return" type="cls_base_template"/>
+      </ownedOperation>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_base_template" name="BaseAttendanceSessionTemplate">
+      <ownedAttribute xmi:id="attr_template_session_repo" name="sessionRepository" type="cls_session_repository"/>
+      <ownedAttribute xmi:id="attr_template_record_repo" name="recordRepository" type="cls_record_repository"/>
+      <ownedAttribute xmi:id="attr_template_user_client" name="userClient" type="cls_user_client"/>
+      <ownedAttribute xmi:id="attr_template_catalog_client" name="catalogClient" type="cls_catalog_client"/>
+      <ownedAttribute xmi:id="attr_template_detail_fetcher" name="detailFetcher" type="cls_detail_fetcher"/>
+      <ownedOperation xmi:id="op_template_constructor" name="BaseAttendanceSessionTemplate">
+        <ownedParameter xmi:id="param_template_ctor_session_repo" name="sessionRepository" type="cls_session_repository" direction="in"/>
+        <ownedParameter xmi:id="param_template_ctor_record_repo" name="recordRepository" type="cls_record_repository" direction="in"/>
+        <ownedParameter xmi:id="param_template_ctor_user_client" name="userClient" type="cls_user_client" direction="in"/>
+        <ownedParameter xmi:id="param_template_ctor_catalog_client" name="catalogClient" type="cls_catalog_client" direction="in"/>
+        <ownedParameter xmi:id="param_template_ctor_detail_fetcher" name="detailFetcher" type="cls_detail_fetcher" direction="in"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_template_create" name="createSession">
+        <ownedParameter xmi:id="param_template_create_raw" name="rawData" type="cls_normalized_session" direction="in"/>
+        <ownedParameter xmi:id="param_template_create_return" direction="return" type="cls_session_detail"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_template_normalize" name="normalizeData">
+        <ownedParameter xmi:id="param_template_normalize_data" name="data" type="cls_normalized_session" direction="in"/>
+        <ownedParameter xmi:id="param_template_normalize_return" direction="return" type="cls_normalized_session"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_template_identifiers" name="ensureRequiredIdentifiers">
+        <ownedParameter xmi:id="param_template_identifiers_data" name="data" type="cls_normalized_session" direction="in"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_template_validate_date" name="validateDateRules">
+        <ownedParameter xmi:id="param_template_validate_date" name="data" type="cls_normalized_session" direction="in"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_template_validate_professor" name="validateProfessor">
+        <ownedParameter xmi:id="param_template_validate_professor" name="professorId" type="type_integer" direction="in"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_template_fetch_group" name="fetchAndValidateGroup">
+        <ownedParameter xmi:id="param_template_fetch_group" name="groupId" type="type_integer" direction="in"/>
+        <ownedParameter xmi:id="param_template_fetch_group_return" direction="return" type="cls_group_summary"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_template_ensure_assignment" name="ensureProfessorAssignment">
+        <ownedParameter xmi:id="param_template_assignment_professor" name="professorId" type="type_integer" direction="in"/>
+        <ownedParameter xmi:id="param_template_assignment_group" name="groupId" type="type_integer" direction="in"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_template_ensure_duplicate" name="ensureNoDuplicateSession">
+        <ownedParameter xmi:id="param_template_duplicate_group" name="groupId" type="type_integer" direction="in"/>
+        <ownedParameter xmi:id="param_template_duplicate_date" name="sessionDate" type="type_string" direction="in"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_template_apply_specific" name="applySpecificValidations">
+        <ownedParameter xmi:id="param_template_apply_data" name="data" type="cls_normalized_session" direction="in"/>
+        <ownedParameter xmi:id="param_template_apply_group" name="group" type="cls_group_summary" direction="in"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_template_build_payload" name="buildSessionPayload">
+        <ownedParameter xmi:id="param_template_build_data" name="data" type="cls_normalized_session" direction="in"/>
+        <ownedParameter xmi:id="param_template_build_group" name="group" type="cls_group_summary" direction="in"/>
+        <ownedParameter xmi:id="param_template_build_return" direction="return" type="cls_session_payload"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_template_handle_records" name="handleInitialRecords">
+        <ownedParameter xmi:id="param_template_handle_session" name="sessionId" type="type_integer" direction="in"/>
+        <ownedParameter xmi:id="param_template_handle_data" name="data" type="cls_normalized_session" direction="in"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_template_build_records" name="buildInitialRecords">
+        <ownedParameter xmi:id="param_template_build_records_enrolled" name="enrollments" type="cls_enrollment" lower="0" upper="*" direction="in"/>
+        <ownedParameter xmi:id="param_template_build_records_session" name="sessionId" type="type_integer" direction="in"/>
+        <ownedParameter xmi:id="param_template_build_records_return" direction="return" type="cls_record_batch" lower="0" upper="*"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_template_after_records" name="afterRecordsCreated">
+        <ownedParameter xmi:id="param_template_after_session" name="sessionId" type="type_integer" direction="in"/>
+        <ownedParameter xmi:id="param_template_after_data" name="data" type="cls_normalized_session" direction="in"/>
+        <ownedParameter xmi:id="param_template_after_enrollments" name="enrollments" type="cls_enrollment" lower="0" upper="*" direction="in"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_template_append_metadata" name="appendResponseMetadata">
+        <ownedParameter xmi:id="param_template_append_response" name="response" type="cls_session_detail" direction="in"/>
+        <ownedParameter xmi:id="param_template_append_data" name="data" type="cls_normalized_session" direction="in"/>
+        <ownedParameter xmi:id="param_template_append_group" name="group" type="cls_group_summary" direction="in"/>
+        <ownedParameter xmi:id="param_template_append_return" direction="return" type="cls_session_detail"/>
+      </ownedOperation>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_normal_template" name="NormalAttendanceSessionTemplate">
+      <generalization xmi:id="gen_normal_template" general="cls_base_template"/>
+      <ownedOperation xmi:id="op_normal_apply_specific" name="applySpecificValidations">
+        <ownedParameter xmi:id="param_normal_apply_data" name="data" type="cls_normalized_session" direction="in"/>
+        <ownedParameter xmi:id="param_normal_apply_group" name="group" type="cls_group_summary" direction="in"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_normal_after_records" name="afterRecordsCreated">
+        <ownedParameter xmi:id="param_normal_after_session" name="sessionId" type="type_integer" direction="in"/>
+        <ownedParameter xmi:id="param_normal_after_data" name="data" type="cls_normalized_session" direction="in"/>
+        <ownedParameter xmi:id="param_normal_after_enrollments" name="enrollments" type="cls_enrollment" lower="0" upper="*" direction="in"/>
+        <ownedParameter xmi:id="param_normal_after_return" direction="return" type="cls_preparation_summary"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_normal_append_metadata" name="appendResponseMetadata">
+        <ownedParameter xmi:id="param_normal_append_response" name="response" type="cls_session_detail" direction="in"/>
+        <ownedParameter xmi:id="param_normal_append_data" name="data" type="cls_normalized_session" direction="in"/>
+        <ownedParameter xmi:id="param_normal_append_group" name="group" type="cls_group_summary" direction="in"/>
+        <ownedParameter xmi:id="param_normal_append_return" direction="return" type="cls_session_detail"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_normal_ensure_defaults" name="ensureNormalDefaults">
+        <ownedParameter xmi:id="param_normal_defaults_data" name="data" type="cls_normalized_session" direction="in"/>
+        <ownedParameter xmi:id="param_normal_defaults_group" name="group" type="cls_group_summary" direction="in"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_normal_build_summary" name="buildPreparationSummary">
+        <ownedParameter xmi:id="param_normal_summary_session" name="sessionId" type="type_integer" direction="in"/>
+        <ownedParameter xmi:id="param_normal_summary_total" name="totalStudents" type="type_integer" direction="in"/>
+        <ownedParameter xmi:id="param_normal_summary_return" direction="return" type="cls_preparation_summary"/>
+      </ownedOperation>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="cls_exam_template" name="ExamAttendanceSessionTemplate">
+      <generalization xmi:id="gen_exam_template" general="cls_base_template"/>
+      <ownedOperation xmi:id="op_exam_apply_specific" name="applySpecificValidations">
+        <ownedParameter xmi:id="param_exam_apply_data" name="data" type="cls_normalized_session" direction="in"/>
+        <ownedParameter xmi:id="param_exam_apply_group" name="group" type="cls_group_summary" direction="in"/>
+      </ownedOperation>
+      <ownedOperation xmi:id="op_exam_append_metadata" name="appendResponseMetadata">
+        <ownedParameter xmi:id="param_exam_append_response" name="response" type="cls_session_detail" direction="in"/>
+        <ownedParameter xmi:id="param_exam_append_data" name="data" type="cls_normalized_session" direction="in"/>
+        <ownedParameter xmi:id="param_exam_append_group" name="group" type="cls_group_summary" direction="in"/>
+        <ownedParameter xmi:id="param_exam_append_return" direction="return" type="cls_session_detail"/>
+      </ownedOperation>
+    </packagedElement>
     <packagedElement xmi:type="uml:Activity" xmi:id="act_template" name="Crear sesión de asistencia (Template Method)">
       <node xmi:type="uml:InitialNode" xmi:id="node_template_init" name="Inicio">
         <outgoing>flow_init_resolve</outgoing>
       </node>
-      <node xmi:type="uml:OpaqueAction" xmi:id="node_resolve_template" name="AttendanceService.resolveSessionTemplate()">
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_resolve_template" name="AttendanceService.resolveSessionTemplate(session_type)" operation="op_service_resolve">
         <ownedComment xmi:id="cmt_resolve_template" body="Selecciona NormalAttendanceSessionTemplate o ExamAttendanceSessionTemplate según session_type."/>
+        <target xmi:type="uml:InputPin" xmi:id="pin_resolve_service" name="attendanceService" type="cls_attendance_service"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_resolve_type" name="session_type" type="type_string"/>
+        <result xmi:type="uml:OutputPin" xmi:id="pin_resolve_template" name="template" type="cls_base_template"/>
         <incoming>flow_init_resolve</incoming>
         <outgoing>flow_resolve_create</outgoing>
       </node>
-      <node xmi:type="uml:OpaqueAction" xmi:id="node_normalize" name="BaseTemplate.normalizeData()">
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_normalize" name="BaseTemplate.normalizeData(rawData)" operation="op_template_normalize">
         <ownedComment xmi:id="cmt_normalize" body="Completa session_type y session_date con valores por defecto."/>
+        <target xmi:type="uml:InputPin" xmi:id="pin_normalize_target" name="template" type="cls_base_template"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_normalize_raw" name="rawData" type="cls_normalized_session"/>
+        <result xmi:type="uml:OutputPin" xmi:id="pin_normalize_data" name="data" type="cls_normalized_session"/>
         <incoming>flow_resolve_create</incoming>
         <outgoing>flow_normalize_identifiers</outgoing>
       </node>
-      <node xmi:type="uml:OpaqueAction" xmi:id="node_identifiers" name="ensureRequiredIdentifiers()">
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_identifiers" name="ensureRequiredIdentifiers(data)" operation="op_template_identifiers">
+        <target xmi:type="uml:InputPin" xmi:id="pin_identifiers_template" name="template" type="cls_base_template"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_identifiers_data" name="data" type="cls_normalized_session"/>
         <incoming>flow_normalize_identifiers</incoming>
         <outgoing>flow_identifiers_date</outgoing>
       </node>
-      <node xmi:type="uml:OpaqueAction" xmi:id="node_validate_date" name="validateDateRules()">
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_validate_date" name="validateDateRules(data)" operation="op_template_validate_date">
+        <target xmi:type="uml:InputPin" xmi:id="pin_validate_date_template" name="template" type="cls_base_template"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_validate_date_data" name="data" type="cls_normalized_session"/>
         <incoming>flow_identifiers_date</incoming>
         <outgoing>flow_date_professor</outgoing>
       </node>
-      <node xmi:type="uml:OpaqueAction" xmi:id="node_validate_professor" name="validateProfessor()">
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_validate_professor" name="validateProfessor(professor_id)" operation="op_template_validate_professor">
+        <target xmi:type="uml:InputPin" xmi:id="pin_validate_professor_template" name="template" type="cls_base_template"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_validate_professor_id" name="professor_id" type="type_integer"/>
         <incoming>flow_date_professor</incoming>
         <outgoing>flow_professor_group</outgoing>
       </node>
-      <node xmi:type="uml:OpaqueAction" xmi:id="node_fetch_group" name="fetchAndValidateGroup()">
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_fetch_group" name="fetchAndValidateGroup(group_id)" operation="op_template_fetch_group">
+        <target xmi:type="uml:InputPin" xmi:id="pin_fetch_group_template" name="template" type="cls_base_template"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_fetch_group_id" name="group_id" type="type_integer"/>
+        <result xmi:type="uml:OutputPin" xmi:id="pin_fetch_group_result" name="group" type="cls_group_summary"/>
         <incoming>flow_professor_group</incoming>
         <outgoing>flow_group_assignment</outgoing>
       </node>
-      <node xmi:type="uml:OpaqueAction" xmi:id="node_ensure_assignment" name="ensureProfessorAssignment()">
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_ensure_assignment" name="ensureProfessorAssignment(professor_id, group_id)" operation="op_template_ensure_assignment">
+        <target xmi:type="uml:InputPin" xmi:id="pin_assignment_template" name="template" type="cls_base_template"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_assignment_professor" name="professor_id" type="type_integer"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_assignment_group" name="group_id" type="type_integer"/>
         <incoming>flow_group_assignment</incoming>
         <outgoing>flow_assignment_duplicate</outgoing>
       </node>
-      <node xmi:type="uml:OpaqueAction" xmi:id="node_ensure_duplicate" name="ensureNoDuplicateSession()">
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_ensure_duplicate" name="ensureNoDuplicateSession(group_id, session_date)" operation="op_template_ensure_duplicate">
+        <target xmi:type="uml:InputPin" xmi:id="pin_duplicate_template" name="template" type="cls_base_template"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_duplicate_group" name="group_id" type="type_integer"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_duplicate_date" name="session_date" type="type_string"/>
         <incoming>flow_assignment_duplicate</incoming>
         <outgoing>flow_duplicate_decision</outgoing>
       </node>
@@ -45,13 +317,19 @@
         <outgoing>flow_decision_normal</outgoing>
         <outgoing>flow_decision_exam</outgoing>
       </node>
-      <node xmi:type="uml:OpaqueAction" xmi:id="node_normal_specific" name="NormalTemplate.applySpecificValidations()">
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_normal_specific" name="NormalTemplate.applySpecificValidations(data, group)" operation="op_normal_apply_specific">
         <ownedComment xmi:id="cmt_normal_specific" body="Asegura session_type 'normal' y completa start_time/end_time con defaults del grupo."/>
+        <target xmi:type="uml:InputPin" xmi:id="pin_normal_specific_target" name="normalTemplate" type="cls_normal_template"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_normal_specific_data" name="data" type="cls_normalized_session"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_normal_specific_group" name="group" type="cls_group_summary"/>
         <incoming>flow_decision_normal</incoming>
         <outgoing>flow_normal_merge</outgoing>
       </node>
-      <node xmi:type="uml:OpaqueAction" xmi:id="node_exam_specific" name="ExamTemplate.applySpecificValidations()">
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_exam_specific" name="ExamTemplate.applySpecificValidations(data)" operation="op_exam_apply_specific">
         <ownedComment xmi:id="cmt_exam_specific" body="Exige horarios, calcula duración en minutos y marca exam_is_strict."/>
+        <target xmi:type="uml:InputPin" xmi:id="pin_exam_specific_target" name="examTemplate" type="cls_exam_template"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_exam_specific_data" name="data" type="cls_normalized_session"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_exam_specific_group" name="group" type="cls_group_summary"/>
         <incoming>flow_decision_exam</incoming>
         <outgoing>flow_exam_merge</outgoing>
       </node>
@@ -60,20 +338,31 @@
         <incoming>flow_exam_merge</incoming>
         <outgoing>flow_merge_payload</outgoing>
       </node>
-      <node xmi:type="uml:OpaqueAction" xmi:id="node_build_payload" name="buildSessionPayload()">
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_build_payload" name="buildSessionPayload(data, group)" operation="op_template_build_payload">
+        <target xmi:type="uml:InputPin" xmi:id="pin_build_payload_template" name="template" type="cls_base_template"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_build_payload_data" name="data" type="cls_normalized_session"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_build_payload_group" name="group" type="cls_group_summary"/>
+        <result xmi:type="uml:OutputPin" xmi:id="pin_build_payload_result" name="payload" type="cls_session_payload"/>
         <incoming>flow_merge_payload</incoming>
         <outgoing>flow_payload_entity</outgoing>
       </node>
-      <node xmi:type="uml:OpaqueAction" xmi:id="node_entity_validate" name="new AttendanceSession().validate()">
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_entity_validate" name="AttendanceSession.validate()" operation="op_attendance_session_validate">
+        <target xmi:type="uml:InputPin" xmi:id="pin_entity_validate_session" name="session" type="cls_attendance_session"/>
         <incoming>flow_payload_entity</incoming>
         <outgoing>flow_entity_insert</outgoing>
       </node>
-      <node xmi:type="uml:OpaqueAction" xmi:id="node_insert_session" name="sessionRepository.insert()">
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_insert_session" name="sessionRepository.insert(payload)" operation="op_session_repo_insert">
+        <target xmi:type="uml:InputPin" xmi:id="pin_insert_session_repo" name="sessionRepository" type="cls_session_repository"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_insert_session_payload" name="payload" type="cls_session_payload"/>
+        <result xmi:type="uml:OutputPin" xmi:id="pin_insert_session_id" name="sessionId" type="type_integer"/>
         <incoming>flow_entity_insert</incoming>
         <outgoing>flow_insert_records</outgoing>
       </node>
-      <node xmi:type="uml:OpaqueAction" xmi:id="node_handle_records" name="handleInitialRecords()">
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_handle_records" name="handleInitialRecords(sessionId, data)" operation="op_template_handle_records">
         <ownedComment xmi:id="cmt_handle_records" body="Obtiene matrículas, construye registros iniciales y ejecuta afterRecordsCreated() como hook."/>
+        <target xmi:type="uml:InputPin" xmi:id="pin_handle_records_template" name="template" type="cls_base_template"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_handle_records_session" name="sessionId" type="type_integer"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_handle_records_data" name="data" type="cls_normalized_session"/>
         <incoming>flow_insert_records</incoming>
         <outgoing>flow_records_decision</outgoing>
       </node>
@@ -82,22 +371,33 @@
         <outgoing>flow_after_normal</outgoing>
         <outgoing>flow_after_exam</outgoing>
       </node>
-      <node xmi:type="uml:OpaqueAction" xmi:id="node_after_normal" name="NormalTemplate.afterRecordsCreated()">
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_after_normal" name="NormalTemplate.afterRecordsCreated(...)" operation="op_normal_after_records">
         <ownedComment xmi:id="cmt_after_normal" body="Retorna un resumen de preparación con el total de estudiantes."/>
+        <target xmi:type="uml:InputPin" xmi:id="pin_after_normal_template" name="normalTemplate" type="cls_normal_template"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_after_normal_session" name="sessionId" type="type_integer"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_after_normal_data" name="data" type="cls_normalized_session"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_after_normal_enrollments" name="enrollments" type="cls_enrollment"/>
         <incoming>flow_after_normal</incoming>
         <outgoing>flow_after_merge</outgoing>
       </node>
-      <node xmi:type="uml:OpaqueAction" xmi:id="node_after_exam" name="ExamTemplate.afterRecordsCreated()">
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_after_exam" name="ExamTemplate.afterRecordsCreated(...)" operation="op_template_after_records">
         <ownedComment xmi:id="cmt_after_exam" body="Utiliza implementación base (sin cambios)."/>
+        <target xmi:type="uml:InputPin" xmi:id="pin_after_exam_template" name="examTemplate" type="cls_exam_template"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_after_exam_session" name="sessionId" type="type_integer"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_after_exam_data" name="data" type="cls_normalized_session"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_after_exam_enrollments" name="enrollments" type="cls_enrollment"/>
         <incoming>flow_after_exam</incoming>
-        <outgoing>flow_after_merge</outgoing>
+        <outgoing>flow_after_merge_exam</outgoing>
       </node>
       <node xmi:type="uml:MergeNode" xmi:id="node_after_records_merge" name="Registros iniciales listos">
         <incoming>flow_after_merge</incoming>
         <incoming>flow_after_merge_exam</incoming>
         <outgoing>flow_records_details</outgoing>
       </node>
-      <node xmi:type="uml:OpaqueAction" xmi:id="node_fetch_details" name="detailFetcher(sessionId)">
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_fetch_details" name="detailFetcher(sessionId)" operation="op_detail_fetcher">
+        <target xmi:type="uml:InputPin" xmi:id="pin_fetch_details_target" name="detailFetcher" type="cls_detail_fetcher"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_fetch_details_session" name="sessionId" type="type_integer"/>
+        <result xmi:type="uml:OutputPin" xmi:id="pin_fetch_details_result" name="detailedSession" type="cls_session_detail"/>
         <incoming>flow_records_details</incoming>
         <outgoing>flow_details_decision</outgoing>
       </node>
@@ -106,15 +406,23 @@
         <outgoing>flow_metadata_normal</outgoing>
         <outgoing>flow_metadata_exam</outgoing>
       </node>
-      <node xmi:type="uml:OpaqueAction" xmi:id="node_metadata_normal" name="NormalTemplate.appendResponseMetadata()">
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_metadata_normal" name="NormalTemplate.appendResponseMetadata(...)" operation="op_normal_append_metadata">
         <ownedComment xmi:id="cmt_metadata_normal" body="Agrega session_type 'normal' a la respuesta detallada."/>
+        <target xmi:type="uml:InputPin" xmi:id="pin_metadata_normal_template" name="normalTemplate" type="cls_normal_template"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_metadata_normal_response" name="response" type="cls_session_detail"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_metadata_normal_data" name="data" type="cls_normalized_session"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_metadata_normal_group" name="group" type="cls_group_summary"/>
         <incoming>flow_metadata_normal</incoming>
         <outgoing>flow_metadata_merge</outgoing>
       </node>
-      <node xmi:type="uml:OpaqueAction" xmi:id="node_metadata_exam" name="ExamTemplate.appendResponseMetadata()">
+      <node xmi:type="uml:CallOperationAction" xmi:id="node_metadata_exam" name="ExamTemplate.appendResponseMetadata(...)" operation="op_exam_append_metadata">
         <ownedComment xmi:id="cmt_metadata_exam" body="Incluye exam_metadata con título, duración y modo estricto."/>
+        <target xmi:type="uml:InputPin" xmi:id="pin_metadata_exam_template" name="examTemplate" type="cls_exam_template"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_metadata_exam_response" name="response" type="cls_session_detail"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_metadata_exam_data" name="data" type="cls_normalized_session"/>
+        <argument xmi:type="uml:InputPin" xmi:id="pin_metadata_exam_group" name="group" type="cls_group_summary"/>
         <incoming>flow_metadata_exam</incoming>
-        <outgoing>flow_metadata_merge</outgoing>
+        <outgoing>flow_metadata_merge_exam</outgoing>
       </node>
       <node xmi:type="uml:MergeNode" xmi:id="node_metadata_merge" name="Respuesta enriquecida">
         <incoming>flow_metadata_merge</incoming>
@@ -147,20 +455,20 @@
       <edge xmi:type="uml:ControlFlow" xmi:id="flow_insert_records" source="node_insert_session" target="node_handle_records"/>
       <edge xmi:type="uml:ControlFlow" xmi:id="flow_records_decision" source="node_handle_records" target="node_after_records_decision"/>
       <edge xmi:type="uml:ControlFlow" xmi:id="flow_after_normal" name="normal" source="node_after_records_decision" target="node_after_normal">
-        <guard xmi:type="uml:LiteralString" xmi:id="guard_after_normal" value="Template === Normal"/>
+        <guard xmi:type="uml:LiteralString" xmi:id="guard_after_normal" value="template instanceof Normal"/>
       </edge>
       <edge xmi:type="uml:ControlFlow" xmi:id="flow_after_exam" name="exam" source="node_after_records_decision" target="node_after_exam">
-        <guard xmi:type="uml:LiteralString" xmi:id="guard_after_exam" value="Template === Exam"/>
+        <guard xmi:type="uml:LiteralString" xmi:id="guard_after_exam" value="template instanceof Exam"/>
       </edge>
       <edge xmi:type="uml:ControlFlow" xmi:id="flow_after_merge" source="node_after_normal" target="node_after_records_merge"/>
       <edge xmi:type="uml:ControlFlow" xmi:id="flow_after_merge_exam" source="node_after_exam" target="node_after_records_merge"/>
       <edge xmi:type="uml:ControlFlow" xmi:id="flow_records_details" source="node_after_records_merge" target="node_fetch_details"/>
       <edge xmi:type="uml:ControlFlow" xmi:id="flow_details_decision" source="node_fetch_details" target="node_metadata_decision"/>
       <edge xmi:type="uml:ControlFlow" xmi:id="flow_metadata_normal" name="normal" source="node_metadata_decision" target="node_metadata_normal">
-        <guard xmi:type="uml:LiteralString" xmi:id="guard_metadata_normal" value="Template === Normal"/>
+        <guard xmi:type="uml:LiteralString" xmi:id="guard_metadata_normal" value="template instanceof Normal"/>
       </edge>
       <edge xmi:type="uml:ControlFlow" xmi:id="flow_metadata_exam" name="exam" source="node_metadata_decision" target="node_metadata_exam">
-        <guard xmi:type="uml:LiteralString" xmi:id="guard_metadata_exam" value="Template === Exam"/>
+        <guard xmi:type="uml:LiteralString" xmi:id="guard_metadata_exam" value="template instanceof Exam"/>
       </edge>
       <edge xmi:type="uml:ControlFlow" xmi:id="flow_metadata_merge" source="node_metadata_normal" target="node_metadata_merge"/>
       <edge xmi:type="uml:ControlFlow" xmi:id="flow_metadata_merge_exam" source="node_metadata_exam" target="node_metadata_merge"/>
