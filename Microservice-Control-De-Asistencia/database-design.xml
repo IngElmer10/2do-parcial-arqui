@@ -1,261 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <XMI xmi.version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.omg.org/spec/UML/20090901">
-  <uml:Model xmi:id="model_db" name="Microservice Control de Asistencia - Modelo de Datos Detallado">
-    <ownedComment xmi:id="cmt_db_overview" body="Modelo lógico particionado por esquema. Cada paquete agrupa tablas, vistas lógicas y restricciones utilizadas por un microservicio específico."/>
-    <!-- Tipos primitivos comunes -->
-    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_Integer" name="INT"/>
-    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_String" name="VARCHAR"/>
-    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_Text" name="TEXT"/>
-    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_Boolean" name="BOOLEAN"/>
-    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_TinyInt" name="TINYINT"/>
-    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_Timestamp" name="TIMESTAMP"/>
-    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_Date" name="DATE"/>
-    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_Time" name="TIME"/>
-    <!-- Enumeraciones -->
-    <packagedElement xmi:type="uml:Enumeration" xmi:id="enum_user_role" name="user_role">
-      <ownedLiteral xmi:id="literal_professor" name="professor"/>
-      <ownedLiteral xmi:id="literal_student" name="student"/>
-      <ownedLiteral xmi:id="literal_admin" name="admin"/>
-    </packagedElement>
-    <packagedElement xmi:type="uml:Enumeration" xmi:id="enum_status" name="attendance_status">
-      <ownedLiteral xmi:id="literal_present" name="present"/>
-      <ownedLiteral xmi:id="literal_absent" name="absent"/>
-    </packagedElement>
-    <packagedElement xmi:type="uml:Enumeration" xmi:id="enum_session_status" name="session_status">
-      <ownedLiteral xmi:id="literal_open" name="open"/>
-      <ownedLiteral xmi:id="literal_closed" name="closed"/>
-    </packagedElement>
-    <packagedElement xmi:type="uml:Enumeration" xmi:id="enum_session_type" name="session_type">
-      <ownedLiteral xmi:id="literal_normal" name="normal"/>
-      <ownedLiteral xmi:id="literal_exam" name="exam"/>
-    </packagedElement>
-    <packagedElement xmi:type="uml:Enumeration" xmi:id="enum_enrollment_status" name="enrollment_status">
-      <ownedLiteral xmi:id="literal_active" name="active"/>
-      <ownedLiteral xmi:id="literal_inactive" name="inactive"/>
-    </packagedElement>
-    <!-- Esquema users_db -->
+  <uml:Model xmi:id="model_db" name="Microservice Control de Asistencia - Bases de Datos">
+    <ownedComment xmi:id="cmt_db_overview" body="Modelo lógico separado en tres esquemas MySQL independientes, alineados con cada microservicio."/>
+    <!-- Tipos comunes -->
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_INT" name="INT"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_VARCHAR" name="VARCHAR"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_TEXT" name="TEXT"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_DATETIME" name="DATETIME"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="type_BOOLEAN" name="BOOLEAN"/>
+    <!-- users_db -->
     <packagedElement xmi:type="uml:Package" xmi:id="pkg_users_db" name="users_db">
-      <ownedComment xmi:id="cmt_users_schema" body="Propiedad del user-service. Expone identidades, perfiles y matrículas que consumen los demás microservicios vía API."/>
+      <ownedComment xmi:id="cmt_users_db" body="Esquema del user-service. Gestiona credenciales y perfiles de usuario."/>
       <packagedElement xmi:type="uml:Class" xmi:id="cls_users" name="users">
-        <ownedComment xmi:id="cmt_users_table" body="Credenciales y metadatos del usuario. Índice único por username."/>
-        <ownedAttribute xmi:id="attr_users_id" name="id" type="type_Integer"/>
-        <ownedAttribute xmi:id="attr_users_username" name="username" type="type_String">
-          <ownedComment xmi:id="cmt_users_username" body="VARCHAR(50) NOT NULL UNIQUE"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_users_password_hash" name="password_hash" type="type_String">
-          <ownedComment xmi:id="cmt_users_password" body="VARCHAR(255) NOT NULL"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_users_email" name="email" type="type_String">
-          <ownedComment xmi:id="cmt_users_email" body="VARCHAR(100)"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_users_full_name" name="full_name" type="type_String">
-          <ownedComment xmi:id="cmt_users_fullname" body="VARCHAR(100)"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_users_role" name="role" type="enum_user_role"/>
-        <ownedAttribute xmi:id="attr_users_is_active" name="is_active" type="type_Boolean">
-          <ownedComment xmi:id="cmt_users_active" body="DEFAULT TRUE"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_users_created_at" name="created_at" type="type_Timestamp">
-          <ownedComment xmi:id="cmt_users_created_at" body="DEFAULT CURRENT_TIMESTAMP"/>
-        </ownedAttribute>
+        <ownedAttribute xmi:id="attr_users_id" name="id" type="type_INT"/>
+        <ownedAttribute xmi:id="attr_users_username" name="username" type="type_VARCHAR"/>
+        <ownedAttribute xmi:id="attr_users_password" name="password_hash" type="type_VARCHAR"/>
+        <ownedAttribute xmi:id="attr_users_role" name="role" type="type_VARCHAR"/>
+        <ownedAttribute xmi:id="attr_users_created" name="created_at" type="type_DATETIME"/>
       </packagedElement>
       <packagedElement xmi:type="uml:Class" xmi:id="cls_professors" name="professors">
-        <ownedComment xmi:id="cmt_professors_table" body="Perfil extendido de profesores. Restricción UNIQUE (user_id) y employee_code."/>
-        <ownedAttribute xmi:id="attr_professors_id" name="id" type="type_Integer"/>
-        <ownedAttribute xmi:id="attr_professors_user_id" name="user_id" type="type_Integer">
-          <ownedComment xmi:id="cmt_professors_user_id" body="FOREIGN KEY -> users.id"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_professors_employee_code" name="employee_code" type="type_String">
-          <ownedComment xmi:id="cmt_professors_employee_code" body="VARCHAR(20) UNIQUE NOT NULL"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_professors_department" name="department" type="type_String">
-          <ownedComment xmi:id="cmt_professors_department" body="VARCHAR(100)"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_professors_is_active" name="is_active" type="type_Boolean"/>
-        <ownedAttribute xmi:id="attr_professors_created_at" name="created_at" type="type_Timestamp"/>
+        <ownedAttribute xmi:id="attr_professors_id" name="id" type="type_INT"/>
+        <ownedAttribute xmi:id="attr_professors_user" name="user_id" type="type_INT"/>
+        <ownedAttribute xmi:id="attr_professors_employee" name="employee_code" type="type_VARCHAR"/>
+        <ownedAttribute xmi:id="attr_professors_department" name="department" type="type_VARCHAR"/>
       </packagedElement>
       <packagedElement xmi:type="uml:Class" xmi:id="cls_students" name="students">
-        <ownedComment xmi:id="cmt_students_table" body="Perfil extendido de estudiantes. Restricción UNIQUE (user_id) y student_code."/>
-        <ownedAttribute xmi:id="attr_students_id" name="id" type="type_Integer"/>
-        <ownedAttribute xmi:id="attr_students_user_id" name="user_id" type="type_Integer">
-          <ownedComment xmi:id="cmt_students_user_id" body="FOREIGN KEY -> users.id"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_students_student_code" name="student_code" type="type_String">
-          <ownedComment xmi:id="cmt_students_student_code" body="VARCHAR(20) UNIQUE NOT NULL"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_students_career" name="career" type="type_String">
-          <ownedComment xmi:id="cmt_students_career" body="VARCHAR(100)"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_students_is_active" name="is_active" type="type_Boolean"/>
-        <ownedAttribute xmi:id="attr_students_created_at" name="created_at" type="type_Timestamp"/>
-      </packagedElement>
-      <packagedElement xmi:type="uml:Class" xmi:id="cls_group_enrollments" name="group_enrollments">
-        <ownedComment xmi:id="cmt_group_enrollments_table" body="Relación estudiantes-grupos mantenida por user-service para exponer matrículas consolidadas."/>
-        <ownedAttribute xmi:id="attr_group_enrollments_id" name="id" type="type_Integer"/>
-        <ownedAttribute xmi:id="attr_group_enrollments_group_id" name="group_id" type="type_Integer">
-          <ownedComment xmi:id="cmt_group_enrollments_group_id" body="FK lógica -> catalog_db.groups.id"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_group_enrollments_student_id" name="student_id" type="type_Integer">
-          <ownedComment xmi:id="cmt_group_enrollments_student_id" body="FOREIGN KEY -> students.id"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_group_enrollments_status" name="status" type="enum_enrollment_status"/>
-        <ownedAttribute xmi:id="attr_group_enrollments_enrolled_at" name="enrolled_at" type="type_Timestamp">
-          <ownedComment xmi:id="cmt_group_enrollments_enrolled_at" body="DEFAULT CURRENT_TIMESTAMP"/>
-        </ownedAttribute>
+        <ownedAttribute xmi:id="attr_students_id" name="id" type="type_INT"/>
+        <ownedAttribute xmi:id="attr_students_user" name="user_id" type="type_INT"/>
+        <ownedAttribute xmi:id="attr_students_code" name="student_code" type="type_VARCHAR"/>
+        <ownedAttribute xmi:id="attr_students_career" name="career" type="type_VARCHAR"/>
       </packagedElement>
     </packagedElement>
-    <!-- Esquema catalog_db -->
+    <!-- catalog_db -->
     <packagedElement xmi:type="uml:Package" xmi:id="pkg_catalog_db" name="catalog_db">
-      <ownedComment xmi:id="cmt_catalog_schema" body="Propiedad del catalog-service. Administra catálogos académicos, asignaciones y vistas de apoyo para los demás servicios."/>
+      <ownedComment xmi:id="cmt_catalog_db" body="Esquema del catalog-service. Mantiene catálogos académicos."/>
       <packagedElement xmi:type="uml:Class" xmi:id="cls_subjects" name="subjects">
-        <ownedComment xmi:id="cmt_subjects_table" body="Maestro de materias. Índice único por code."/>
-        <ownedAttribute xmi:id="attr_subjects_id" name="id" type="type_Integer"/>
-        <ownedAttribute xmi:id="attr_subjects_code" name="code" type="type_String">
-          <ownedComment xmi:id="cmt_subjects_code" body="VARCHAR(20) UNIQUE NOT NULL"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_subjects_name" name="name" type="type_String">
-          <ownedComment xmi:id="cmt_subjects_name" body="VARCHAR(100) NOT NULL"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_subjects_description" name="description" type="type_Text"/>
-        <ownedAttribute xmi:id="attr_subjects_created_at" name="created_at" type="type_Timestamp">
-          <ownedComment xmi:id="cmt_subjects_created_at" body="DEFAULT CURRENT_TIMESTAMP"/>
-        </ownedAttribute>
+        <ownedAttribute xmi:id="attr_subjects_id" name="id" type="type_INT"/>
+        <ownedAttribute xmi:id="attr_subjects_code" name="code" type="type_VARCHAR"/>
+        <ownedAttribute xmi:id="attr_subjects_name" name="name" type="type_VARCHAR"/>
+        <ownedAttribute xmi:id="attr_subjects_desc" name="description" type="type_TEXT"/>
       </packagedElement>
       <packagedElement xmi:type="uml:Class" xmi:id="cls_groups" name="groups">
-        <ownedComment xmi:id="cmt_groups_table" body="Instancias de materias por periodo. UNIQUE (subject_id, code). Índices por estado y término."/>
-        <ownedAttribute xmi:id="attr_groups_id" name="id" type="type_Integer"/>
-        <ownedAttribute xmi:id="attr_groups_subject_id" name="subject_id" type="type_Integer">
-          <ownedComment xmi:id="cmt_groups_subject_id" body="FOREIGN KEY -> subjects.id"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_groups_code" name="code" type="type_String">
-          <ownedComment xmi:id="cmt_groups_code" body="VARCHAR(20) NOT NULL"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_groups_name" name="name" type="type_String">
-          <ownedComment xmi:id="cmt_groups_name" body="VARCHAR(100) NOT NULL"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_groups_term" name="term" type="type_String">
-          <ownedComment xmi:id="cmt_groups_term" body="VARCHAR(20)"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_groups_description" name="description" type="type_Text"/>
-        <ownedAttribute xmi:id="attr_groups_is_active" name="is_active" type="type_Boolean">
-          <ownedComment xmi:id="cmt_groups_is_active" body="DEFAULT TRUE"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_groups_created_at" name="created_at" type="type_Timestamp"/>
+        <ownedAttribute xmi:id="attr_groups_id" name="id" type="type_INT"/>
+        <ownedAttribute xmi:id="attr_groups_subject" name="subject_id" type="type_INT"/>
+        <ownedAttribute xmi:id="attr_groups_code" name="code" type="type_VARCHAR"/>
+        <ownedAttribute xmi:id="attr_groups_term" name="term" type="type_VARCHAR"/>
       </packagedElement>
       <packagedElement xmi:type="uml:Class" xmi:id="cls_group_professors" name="group_professors">
-        <ownedComment xmi:id="cmt_group_professors_table" body="Asignación operativa de profesores a grupos. UNIQUE (group_id, professor_id)."/>
-        <ownedAttribute xmi:id="attr_group_professors_id" name="id" type="type_Integer"/>
-        <ownedAttribute xmi:id="attr_group_professors_group_id" name="group_id" type="type_Integer">
-          <ownedComment xmi:id="cmt_group_professors_group_id" body="FOREIGN KEY -> groups.id"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_group_professors_professor_id" name="professor_id" type="type_Integer">
-          <ownedComment xmi:id="cmt_group_professors_professor_id" body="FK lógica -> users_db.professors.id"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_group_professors_assigned_at" name="assigned_at" type="type_Timestamp">
-          <ownedComment xmi:id="cmt_group_professors_assigned_at" body="DEFAULT CURRENT_TIMESTAMP"/>
-        </ownedAttribute>
-      </packagedElement>
-      <packagedElement xmi:type="uml:Class" xmi:id="cls_subject_teachers" name="subject_teachers">
-        <ownedComment xmi:id="cmt_subject_teachers_table" body="Catálogo histórico de docentes autorizados por materia. UNIQUE (subject_id, professor_id)."/>
-        <ownedAttribute xmi:id="attr_subject_teachers_id" name="id" type="type_Integer"/>
-        <ownedAttribute xmi:id="attr_subject_teachers_subject_id" name="subject_id" type="type_Integer">
-          <ownedComment xmi:id="cmt_subject_teachers_subject_id" body="FOREIGN KEY -> subjects.id"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_subject_teachers_professor_id" name="professor_id" type="type_Integer">
-          <ownedComment xmi:id="cmt_subject_teachers_professor_id" body="FK lógica -> users_db.professors.id"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_subject_teachers_assigned_at" name="assigned_at" type="type_Timestamp">
-          <ownedComment xmi:id="cmt_subject_teachers_assigned_at" body="DEFAULT CURRENT_TIMESTAMP"/>
-        </ownedAttribute>
-      </packagedElement>
-      <packagedElement xmi:type="uml:Class" xmi:id="cls_subject_students" name="subject_students">
-        <ownedComment xmi:id="cmt_subject_students_table" body="Visor de inscripciones de estudiantes por materia sincronizado con user-service."/>
-        <ownedAttribute xmi:id="attr_subject_students_id" name="id" type="type_Integer"/>
-        <ownedAttribute xmi:id="attr_subject_students_subject_id" name="subject_id" type="type_Integer">
-          <ownedComment xmi:id="cmt_subject_students_subject_id" body="FOREIGN KEY -> subjects.id"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_subject_students_student_id" name="student_id" type="type_Integer">
-          <ownedComment xmi:id="cmt_subject_students_student_id" body="FK lógica -> users_db.students.id"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_subject_students_enrolled_at" name="enrolled_at" type="type_Timestamp">
-          <ownedComment xmi:id="cmt_subject_students_enrolled_at" body="DEFAULT CURRENT_TIMESTAMP"/>
-        </ownedAttribute>
+        <ownedAttribute xmi:id="attr_gp_id" name="id" type="type_INT"/>
+        <ownedAttribute xmi:id="attr_gp_group" name="group_id" type="type_INT"/>
+        <ownedAttribute xmi:id="attr_gp_professor" name="professor_id" type="type_INT"/>
       </packagedElement>
     </packagedElement>
-    <!-- Esquema attendance_db -->
+    <!-- attendance_db -->
     <packagedElement xmi:type="uml:Package" xmi:id="pkg_attendance_db" name="attendance_db">
-      <ownedComment xmi:id="cmt_attendance_schema" body="Propiedad del attendance-service. Consolida sesiones, registros y métricas de asistencia."/>
-      <packagedElement xmi:type="uml:Class" xmi:id="cls_attendance_sessions" name="attendance_sessions">
-        <ownedComment xmi:id="cmt_attendance_sessions_table" body="Sesiones programadas por grupo. UNIQUE (group_id, session_date, start_time). Índices por estado, fecha y profesor."/>
-        <ownedAttribute xmi:id="attr_attendance_sessions_id" name="id" type="type_Integer"/>
-        <ownedAttribute xmi:id="attr_attendance_sessions_group_id" name="group_id" type="type_Integer">
-          <ownedComment xmi:id="cmt_attendance_sessions_group_id" body="FK lógica -> catalog_db.groups.id"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_attendance_sessions_subject_id" name="subject_id" type="type_Integer">
-          <ownedComment xmi:id="cmt_attendance_sessions_subject_id" body="FK lógica -> catalog_db.subjects.id"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_attendance_sessions_professor_id" name="professor_id" type="type_Integer">
-          <ownedComment xmi:id="cmt_attendance_sessions_professor_id" body="FK lógica -> users_db.professors.id"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_attendance_sessions_session_date" name="session_date" type="type_Date"/>
-        <ownedAttribute xmi:id="attr_attendance_sessions_start_time" name="start_time" type="type_Time"/>
-        <ownedAttribute xmi:id="attr_attendance_sessions_end_time" name="end_time" type="type_Time"/>
-        <ownedAttribute xmi:id="attr_attendance_sessions_status" name="status" type="enum_session_status"/>
-        <ownedAttribute xmi:id="attr_attendance_sessions_session_type" name="session_type" type="enum_session_type"/>
-        <ownedAttribute xmi:id="attr_attendance_sessions_exam_title" name="exam_title" type="type_String">
-          <ownedComment xmi:id="cmt_attendance_sessions_exam_title" body="VARCHAR(255) NULL"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_attendance_sessions_exam_duration" name="exam_duration_minutes" type="type_Integer"/>
-        <ownedAttribute xmi:id="attr_attendance_sessions_exam_is_strict" name="exam_is_strict" type="type_TinyInt">
-          <ownedComment xmi:id="cmt_attendance_sessions_exam_is_strict" body="TINYINT(1)"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_attendance_sessions_created_at" name="created_at" type="type_Timestamp">
-          <ownedComment xmi:id="cmt_attendance_sessions_created_at" body="DEFAULT CURRENT_TIMESTAMP"/>
-        </ownedAttribute>
+      <ownedComment xmi:id="cmt_attendance_db" body="Esquema del attendance-service. Controla sesiones y registros de asistencia."/>
+      <packagedElement xmi:type="uml:Class" xmi:id="cls_sessions" name="attendance_sessions">
+        <ownedAttribute xmi:id="attr_sessions_id" name="id" type="type_INT"/>
+        <ownedAttribute xmi:id="attr_sessions_group" name="group_id" type="type_INT"/>
+        <ownedAttribute xmi:id="attr_sessions_professor" name="professor_id" type="type_INT"/>
+        <ownedAttribute xmi:id="attr_sessions_type" name="session_type" type="type_VARCHAR"/>
+        <ownedAttribute xmi:id="attr_sessions_opened" name="opened_at" type="type_DATETIME"/>
+        <ownedAttribute xmi:id="attr_sessions_closed" name="closed_at" type="type_DATETIME"/>
       </packagedElement>
-      <packagedElement xmi:type="uml:Class" xmi:id="cls_attendance_records" name="attendance_records">
-        <ownedComment xmi:id="cmt_attendance_records_table" body="Detalle por estudiante. UNIQUE (session_id, student_id). Índices por estado y estudiante."/>
-        <ownedAttribute xmi:id="attr_attendance_records_id" name="id" type="type_Integer"/>
-        <ownedAttribute xmi:id="attr_attendance_records_session_id" name="session_id" type="type_Integer">
-          <ownedComment xmi:id="cmt_attendance_records_session_id" body="FOREIGN KEY -> attendance_sessions.id"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_attendance_records_student_id" name="student_id" type="type_Integer">
-          <ownedComment xmi:id="cmt_attendance_records_student_id" body="FK lógica -> users_db.students.id"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:id="attr_attendance_records_status" name="status" type="enum_status"/>
-        <ownedAttribute xmi:id="attr_attendance_records_recorded_at" name="recorded_at" type="type_Timestamp">
-          <ownedComment xmi:id="cmt_attendance_records_recorded_at" body="DEFAULT CURRENT_TIMESTAMP"/>
-        </ownedAttribute>
+      <packagedElement xmi:type="uml:Class" xmi:id="cls_records" name="attendance_records">
+        <ownedAttribute xmi:id="attr_records_id" name="id" type="type_INT"/>
+        <ownedAttribute xmi:id="attr_records_session" name="session_id" type="type_INT"/>
+        <ownedAttribute xmi:id="attr_records_student" name="student_id" type="type_INT"/>
+        <ownedAttribute xmi:id="attr_records_status" name="status" type="type_VARCHAR"/>
+        <ownedAttribute xmi:id="attr_records_marked" name="marked_at" type="type_DATETIME"/>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="cls_records_audit" name="attendance_record_audit">
+        <ownedAttribute xmi:id="attr_audit_id" name="id" type="type_INT"/>
+        <ownedAttribute xmi:id="attr_audit_record" name="record_id" type="type_INT"/>
+        <ownedAttribute xmi:id="attr_audit_action" name="action" type="type_VARCHAR"/>
+        <ownedAttribute xmi:id="attr_audit_timestamp" name="changed_at" type="type_DATETIME"/>
       </packagedElement>
     </packagedElement>
-    <!-- Relaciones intra e inter-esquema -->
-    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_professors_users" name="FK professors.user_id -> users.id" client="cls_professors" supplier="cls_users"/>
-    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_students_users" name="FK students.user_id -> users.id" client="cls_students" supplier="cls_users"/>
-    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_group_enrollments_students" name="FK group_enrollments.student_id -> students.id" client="cls_group_enrollments" supplier="cls_students"/>
-    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_groups_subjects" name="FK groups.subject_id -> subjects.id" client="cls_groups" supplier="cls_subjects"/>
-    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_group_professors_groups" name="FK group_professors.group_id -> groups.id" client="cls_group_professors" supplier="cls_groups"/>
-    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_group_professors_professors" name="FK group_professors.professor_id -> professors.id" client="cls_group_professors" supplier="cls_professors">
-      <ownedComment xmi:id="cmt_dep_group_professors_professors" body="Restricción cruzada verificada por catalog-service consultando user-service."/>
-    </packagedElement>
-    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_subject_teachers_subjects" name="FK subject_teachers.subject_id -> subjects.id" client="cls_subject_teachers" supplier="cls_subjects"/>
-    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_subject_teachers_professors" name="FK subject_teachers.professor_id -> professors.id" client="cls_subject_teachers" supplier="cls_professors">
-      <ownedComment xmi:id="cmt_dep_subject_teachers_professors" body="Integridad coordinada vía API user-service."/>
-    </packagedElement>
-    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_subject_students_subjects" name="FK subject_students.subject_id -> subjects.id" client="cls_subject_students" supplier="cls_subjects"/>
-    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_subject_students_students" name="FK subject_students.student_id -> students.id" client="cls_subject_students" supplier="cls_students"/>
-    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_attendance_records_sessions" name="FK attendance_records.session_id -> attendance_sessions.id" client="cls_attendance_records" supplier="cls_attendance_sessions"/>
-    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_attendance_records_students" name="FK attendance_records.student_id -> students.id" client="cls_attendance_records" supplier="cls_students">
-      <ownedComment xmi:id="cmt_dep_attendance_records_student" body="Relaciona attendance_db con users_db para validación de estudiantes."/>
-    </packagedElement>
-    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_attendance_sessions_group" name="FK attendance_sessions.group_id -> catalog_db.groups.id" client="cls_attendance_sessions" supplier="cls_groups">
-      <ownedComment xmi:id="cmt_dep_attendance_sessions_group" body="Sin integridad física. Attendance-service consulta catalog-service antes de insertar."/>
-    </packagedElement>
-    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_attendance_sessions_subject" name="FK attendance_sessions.subject_id -> catalog_db.subjects.id" client="cls_attendance_sessions" supplier="cls_subjects"/>
-    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_attendance_sessions_professor" name="FK attendance_sessions.professor_id -> users_db.professors.id" client="cls_attendance_sessions" supplier="cls_professors">
-      <ownedComment xmi:id="cmt_dep_attendance_sessions_professor" body="Validación cruzada antes de abrir una sesión."/>
-    </packagedElement>
-    <packagedElement xmi:type="uml:Dependency" xmi:id="dep_group_enrollments_groups" name="FK group_enrollments.group_id -> catalog_db.groups.id" client="cls_group_enrollments" supplier="cls_groups">
-      <ownedComment xmi:id="cmt_dep_group_enrollments_groups" body="Relación lógica para sincronizar matrículas con el catálogo."/>
-    </packagedElement>
+    <!-- Relaciones dentro de cada base -->
+    <packagedElement xmi:type="uml:Association" xmi:id="assoc_professors_user" memberEnd="attr_professors_user attr_users_id"/>
+    <packagedElement xmi:type="uml:Association" xmi:id="assoc_students_user" memberEnd="attr_students_user attr_users_id"/>
+    <packagedElement xmi:type="uml:Association" xmi:id="assoc_groups_subject" memberEnd="attr_groups_subject attr_subjects_id"/>
+    <packagedElement xmi:type="uml:Association" xmi:id="assoc_gp_group" memberEnd="attr_gp_group attr_groups_id"/>
+    <packagedElement xmi:type="uml:Association" xmi:id="assoc_sessions_group" memberEnd="attr_sessions_group attr_groups_id"/>
+    <packagedElement xmi:type="uml:Association" xmi:id="assoc_sessions_professor" memberEnd="attr_sessions_professor attr_professors_id"/>
+    <packagedElement xmi:type="uml:Association" xmi:id="assoc_records_session" memberEnd="attr_records_session attr_sessions_id"/>
+    <packagedElement xmi:type="uml:Association" xmi:id="assoc_records_student" memberEnd="attr_records_student attr_students_id"/>
+    <packagedElement xmi:type="uml:Association" xmi:id="assoc_audit_record" memberEnd="attr_audit_record attr_records_id"/>
   </uml:Model>
 </XMI>
