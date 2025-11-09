@@ -1,0 +1,112 @@
+class HttpUtils {
+    static parseRequestBody(request) {
+        return new Promise((resolve, reject) => {
+            let body = '';
+            
+            request.on('data', chunk => {
+                body += chunk.toString();
+            });
+            
+            request.on('end', () => {
+                try {
+                    if (body) {
+                        resolve(JSON.parse(body));
+                    } else {
+                        resolve({});
+                    }
+                } catch (error) {
+                    reject(new Error('Invalid JSON'));
+                }
+            });
+            
+            request.on('error', (error) => {
+                reject(error);
+            });
+        });
+    }
+
+    static sendResponse(res, statusCode, data = null) {
+        res.writeHead(statusCode, {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        });
+        
+        if (data) {
+            res.end(JSON.stringify(data));
+        } else {
+            res.end();
+        }
+    }
+
+    static sendError(res, statusCode, message) {
+        this.sendResponse(res, statusCode, { error: message });
+    }
+
+    static handleCors(req, res) {
+        if (req.method === 'OPTIONS') {
+            this.sendResponse(res, 200);
+            return true;
+        }
+        return false;
+    }
+
+    static validateRequiredFields(data, requiredFields) {
+        const missingFields = requiredFields.filter(field => !data[field]);
+        if (missingFields.length > 0) {
+            throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+        }
+    }
+
+    // Nueva utilidad para hacer llamadas HTTP a otros servicios
+    static async makeHttpRequest(options, data = null) {
+        return new Promise((resolve, reject) => {
+            const http = require('http');
+            const https = require('https');
+            
+            const protocol = options.port === 443 ? https : http;
+            
+            const req = protocol.request(options, (res) => {
+                let responseData = '';
+                
+                res.on('data', (chunk) => {
+                    responseData += chunk;
+                });
+                
+                res.on('end', () => {
+                    try {
+                        const parsedData = responseData ? JSON.parse(responseData) : {};
+                        if (res.statusCode >= 200 && res.statusCode < 300) {
+                            resolve({
+                                statusCode: res.statusCode,
+                                data: parsedData
+                            });
+                        } else {
+                            reject(new Error(parsedData.error || `HTTP ${res.statusCode}`));
+                        }
+                    } catch (error) {
+                        reject(new Error('Invalid response from service'));
+                    }
+                });
+            });
+            
+            req.on('error', (error) => {
+                reject(new Error(`Service communication error: ${error.message}`));
+            });
+            
+            req.setTimeout(5000, () => {
+                req.destroy();
+                reject(new Error('Service request timeout'));
+            });
+            
+            if (data) {
+                req.write(JSON.stringify(data));
+            }
+            
+            req.end();
+        });
+    }
+}
+
+module.exports = HttpUtils;

@@ -1,0 +1,118 @@
+.attendance-history {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.attendance-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.stat-value.present {
+  color: #28a745;
+}
+
+.stat-value.percentage.good {
+  color: #28a745;
+}
+
+.stat-value.percentage.warning {
+  color: #ffc107;
+}
+
+.attendance-list h3 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #3498db;
+}
+
+.no-records {
+  text-align: center;
+  color: #7f8c8d;
+  padding: 2rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.records-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.attendance-record {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  transition: background 0.3s;
+}
+
+.attendance-record:hover {
+  background: #f8f9fa;
+}
+
+.record-date {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.record-status {
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.record-status.present {
+  color: #28a745;
+  background: #d4edda;
+}
+
+.record-status.absent {
+  color: #dc3545;
+  background: #f8d7da;
+}
+
+.modal-actions {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
+  text-align: center;
+}
+
+.close-btn {
+  background: #6c757d;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+}
+
+.close-btn:hover {
+  background: #545b62;
+}

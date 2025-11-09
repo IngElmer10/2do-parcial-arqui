@@ -1,0 +1,13 @@
+{
+  "name": "attendance-service",
+  "version": "1.0.0",
+  "description": "Microservicio de Control de Asistencia",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "mysql2": "^3.6.5"
+  }
+}

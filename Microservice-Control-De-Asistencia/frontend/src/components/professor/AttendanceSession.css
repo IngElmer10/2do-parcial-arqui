@@ -1,0 +1,334 @@
+.attendance-session {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.session-header {
+    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+}
+
+.session-header h2 {
+    margin: 0 0 1rem 0;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.session-info {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+.session-info span {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.status.open {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.status.closed {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.message {
+    padding: 1rem;
+    margin: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.message:not(:empty) {
+    border: 1px solid transparent;
+}
+
+.message.success {
+    background: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.message.error {
+    background: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+.create-session-btn {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 2rem auto;
+    display: block;
+}
+
+.create-session-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+}
+
+.create-session-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.attendance-list {
+    padding: 2rem;
+}
+
+.attendance-list h3 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    font-size: 1.4rem;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 0.5rem;
+}
+
+.students-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.student-card {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.student-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: #3498db;
+    transition: all 0.3s ease;
+}
+
+.student-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: #3498db;
+}
+
+.student-card:hover::before {
+    width: 6px;
+    background: #2980b9;
+}
+
+.student-info {
+    margin-bottom: 1rem;
+}
+
+.student-info strong {
+    display: block;
+    font-size: 1.1rem;
+    color: #2c3e50;
+    margin-bottom: 0.25rem;
+}
+
+.student-info span {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.attendance-controls {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.present-btn,
+.absent-btn {
+    flex: 1;
+    padding: 0.75rem;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.present-btn {
+    background: #e8f5e8;
+    color: #28a745;
+    border-color: #d4edda;
+}
+
+.present-btn:hover:not(:disabled) {
+    background: #d4edda;
+    transform: scale(1.05);
+}
+
+.present-btn.active {
+    background: #28a745;
+    color: white;
+    border-color: #28a745;
+}
+
+.absent-btn {
+    background: #fde8e8;
+    color: #dc3545;
+    border-color: #f8d7da;
+}
+
+.absent-btn:hover:not(:disabled) {
+    background: #f8d7da;
+    transform: scale(1.05);
+}
+
+.absent-btn.active {
+    background: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+
+.present-btn:disabled,
+.absent-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.current-status {
+    text-align: center;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+    font-size: 0.9rem;
+}
+
+.current-status span {
+    font-weight: 600;
+}
+
+.current-status span.present {
+    color: #28a745;
+}
+
+.current-status span.absent {
+    color: #dc3545;
+}
+
+.session-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    padding: 2rem;
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    flex-wrap: wrap;
+}
+
+.save-btn,
+.close-btn {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 150px;
+}
+
+.save-btn {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+}
+
+.save-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+}
+
+.close-btn {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+}
+
+.close-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+}
+
+.save-btn:disabled,
+.close-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .attendance-session {
+        margin: 0 1rem;
+        border-radius: 8px;
+    }
+
+    .session-header {
+        padding: 1.5rem;
+    }
+
+    .session-header h2 {
+        font-size: 1.4rem;
+    }
+
+    .session-info {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .attendance-list {
+        padding: 1.5rem;
+    }
+
+    .students-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .session-actions {
+        flex-direction: column;
+        padding: 1.5rem;
+    }
+
+    .save-btn,
+    .close-btn {
+        min-width: auto;
+        width: 100%;
+    }
+}
