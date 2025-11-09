@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XMI xmi.version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.omg.org/spec/UML/20090901">
+  <uml:Model xmi:id="model_strategy" name="Microservice Control de Asistencia - Strategy">
+    <ownedComment xmi:id="cmt_strategy_overview" body="Diagrama de detalle procedimental del uso del patrón Strategy para exportar sesiones de asistencia desde el componente SessionHistory del frontend."/>
+    <packagedElement xmi:type="uml:Activity" xmi:id="act_strategy" name="Exportar asistencia (Strategy)">
+      <node xmi:type="uml:InitialNode" xmi:id="node_strategy_init" name="Inicio">
+        <outgoing>flow_init_handle</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_handle_export" name="SessionHistory.handleExport()">
+        <ownedComment xmi:id="cmt_handle_export" body="El usuario selecciona un formato (pdf, csv, excel) y se arma el payload con la sesión y los registros."/>
+        <incoming>flow_init_handle</incoming>
+        <outgoing>flow_handle_context</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_context_set" name="AttendanceExportContext.setStrategy()">
+        <ownedComment xmi:id="cmt_context_set" body="El contexto recibe la estrategia concreta correspondiente al formato elegido."/>
+        <incoming>flow_handle_context</incoming>
+        <outgoing>flow_context_export</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_context_export" name="AttendanceExportContext.export()">
+        <ownedComment xmi:id="cmt_context_export" body="Valida que exista estrategia activa y delega la exportación llamando strategy.export(data, options)."/>
+        <incoming>flow_context_export</incoming>
+        <outgoing>flow_export_decision</outgoing>
+      </node>
+      <node xmi:type="uml:DecisionNode" xmi:id="node_strategy_decision" name="¿Formato seleccionado?">
+        <incoming>flow_export_decision</incoming>
+        <outgoing>flow_decision_pdf</outgoing>
+        <outgoing>flow_decision_csv</outgoing>
+        <outgoing>flow_decision_excel</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_pdf_strategy" name="PdfExportStrategy.export()">
+        <ownedComment xmi:id="cmt_pdf_strategy" body="Construye un documento jsPDF con encabezados, lista de estudiantes y guarda el archivo .pdf."/>
+        <incoming>flow_decision_pdf</incoming>
+        <outgoing>flow_pdf_merge</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_csv_strategy" name="CsvExportStrategy.export()">
+        <ownedComment xmi:id="cmt_csv_strategy" body="Genera contenido CSV a partir de los registros, crea un Blob y dispara la descarga del archivo .csv."/>
+        <incoming>flow_decision_csv</incoming>
+        <outgoing>flow_csv_merge</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_excel_strategy" name="ExcelExportStrategy.export()">
+        <ownedComment xmi:id="cmt_excel_strategy" body="Construye un workbook XLSX con los datos de asistencia y escribe el archivo .xlsx."/>
+        <incoming>flow_decision_excel</incoming>
+        <outgoing>flow_excel_merge</outgoing>
+      </node>
+      <node xmi:type="uml:MergeNode" xmi:id="node_strategy_merge" name="Descarga generada">
+        <incoming>flow_pdf_merge</incoming>
+        <incoming>flow_csv_merge</incoming>
+        <incoming>flow_excel_merge</incoming>
+        <outgoing>flow_merge_final</outgoing>
+      </node>
+      <node xmi:type="uml:ActivityFinalNode" xmi:id="node_strategy_final" name="Fin">
+        <incoming>flow_merge_final</incoming>
+      </node>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_init_handle" source="node_strategy_init" target="node_handle_export"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_handle_context" source="node_handle_export" target="node_context_set"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_context_export" source="node_context_set" target="node_context_export"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_export_decision" source="node_context_export" target="node_strategy_decision"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_decision_pdf" name="pdf" source="node_strategy_decision" target="node_pdf_strategy">
+        <guard xmi:type="uml:LiteralString" xmi:id="guard_pdf" value="strategy === 'pdf'"/>
+      </edge>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_decision_csv" name="csv" source="node_strategy_decision" target="node_csv_strategy">
+        <guard xmi:type="uml:LiteralString" xmi:id="guard_csv" value="strategy === 'csv'"/>
+      </edge>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_decision_excel" name="excel" source="node_strategy_decision" target="node_excel_strategy">
+        <guard xmi:type="uml:LiteralString" xmi:id="guard_excel" value="strategy === 'excel'"/>
+      </edge>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_pdf_merge" source="node_pdf_strategy" target="node_strategy_merge"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_csv_merge" source="node_csv_strategy" target="node_strategy_merge"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_excel_merge" source="node_excel_strategy" target="node_strategy_merge"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_merge_final" source="node_strategy_merge" target="node_strategy_final"/>
+    </packagedElement>
+  </uml:Model>
+</XMI>

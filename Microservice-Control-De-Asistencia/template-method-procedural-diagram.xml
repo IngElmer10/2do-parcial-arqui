@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XMI xmi.version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.omg.org/spec/UML/20090901">
+  <uml:Model xmi:id="model_template" name="Microservice Control de Asistencia - Template Method">
+    <ownedComment xmi:id="cmt_template_overview" body="Diagrama de detalle procedimental del método plantilla createSession dentro de BaseAttendanceSessionTemplate y sus extensiones Normal y Exam."/>
+    <packagedElement xmi:type="uml:Activity" xmi:id="act_template" name="Crear sesión de asistencia (Template Method)">
+      <node xmi:type="uml:InitialNode" xmi:id="node_template_init" name="Inicio">
+        <outgoing>flow_init_resolve</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_resolve_template" name="AttendanceService.resolveSessionTemplate()">
+        <ownedComment xmi:id="cmt_resolve_template" body="Selecciona NormalAttendanceSessionTemplate o ExamAttendanceSessionTemplate según session_type."/>
+        <incoming>flow_init_resolve</incoming>
+        <outgoing>flow_resolve_create</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_normalize" name="BaseTemplate.normalizeData()">
+        <ownedComment xmi:id="cmt_normalize" body="Completa session_type y session_date con valores por defecto."/>
+        <incoming>flow_resolve_create</incoming>
+        <outgoing>flow_normalize_identifiers</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_identifiers" name="ensureRequiredIdentifiers()">
+        <incoming>flow_normalize_identifiers</incoming>
+        <outgoing>flow_identifiers_date</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_validate_date" name="validateDateRules()">
+        <incoming>flow_identifiers_date</incoming>
+        <outgoing>flow_date_professor</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_validate_professor" name="validateProfessor()">
+        <incoming>flow_date_professor</incoming>
+        <outgoing>flow_professor_group</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_fetch_group" name="fetchAndValidateGroup()">
+        <incoming>flow_professor_group</incoming>
+        <outgoing>flow_group_assignment</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_ensure_assignment" name="ensureProfessorAssignment()">
+        <incoming>flow_group_assignment</incoming>
+        <outgoing>flow_assignment_duplicate</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_ensure_duplicate" name="ensureNoDuplicateSession()">
+        <incoming>flow_assignment_duplicate</incoming>
+        <outgoing>flow_duplicate_decision</outgoing>
+      </node>
+      <node xmi:type="uml:DecisionNode" xmi:id="node_template_decision" name="¿Tipo de sesión?">
+        <incoming>flow_duplicate_decision</incoming>
+        <outgoing>flow_decision_normal</outgoing>
+        <outgoing>flow_decision_exam</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_normal_specific" name="NormalTemplate.applySpecificValidations()">
+        <ownedComment xmi:id="cmt_normal_specific" body="Asegura session_type 'normal' y completa start_time/end_time con defaults del grupo."/>
+        <incoming>flow_decision_normal</incoming>
+        <outgoing>flow_normal_merge</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_exam_specific" name="ExamTemplate.applySpecificValidations()">
+        <ownedComment xmi:id="cmt_exam_specific" body="Exige horarios, calcula duración en minutos y marca exam_is_strict."/>
+        <incoming>flow_decision_exam</incoming>
+        <outgoing>flow_exam_merge</outgoing>
+      </node>
+      <node xmi:type="uml:MergeNode" xmi:id="node_after_specific" name="Validaciones específicas completadas">
+        <incoming>flow_normal_merge</incoming>
+        <incoming>flow_exam_merge</incoming>
+        <outgoing>flow_merge_payload</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_build_payload" name="buildSessionPayload()">
+        <incoming>flow_merge_payload</incoming>
+        <outgoing>flow_payload_entity</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_entity_validate" name="new AttendanceSession().validate()">
+        <incoming>flow_payload_entity</incoming>
+        <outgoing>flow_entity_insert</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_insert_session" name="sessionRepository.insert()">
+        <incoming>flow_entity_insert</incoming>
+        <outgoing>flow_insert_records</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_handle_records" name="handleInitialRecords()">
+        <ownedComment xmi:id="cmt_handle_records" body="Obtiene matrículas, construye registros iniciales y ejecuta afterRecordsCreated() como hook."/>
+        <incoming>flow_insert_records</incoming>
+        <outgoing>flow_records_decision</outgoing>
+      </node>
+      <node xmi:type="uml:DecisionNode" xmi:id="node_after_records_decision" name="Hook afterRecordsCreated">
+        <incoming>flow_records_decision</incoming>
+        <outgoing>flow_after_normal</outgoing>
+        <outgoing>flow_after_exam</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_after_normal" name="NormalTemplate.afterRecordsCreated()">
+        <ownedComment xmi:id="cmt_after_normal" body="Retorna un resumen de preparación con el total de estudiantes."/>
+        <incoming>flow_after_normal</incoming>
+        <outgoing>flow_after_merge</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_after_exam" name="ExamTemplate.afterRecordsCreated()">
+        <ownedComment xmi:id="cmt_after_exam" body="Utiliza implementación base (sin cambios)."/>
+        <incoming>flow_after_exam</incoming>
+        <outgoing>flow_after_merge</outgoing>
+      </node>
+      <node xmi:type="uml:MergeNode" xmi:id="node_after_records_merge" name="Registros iniciales listos">
+        <incoming>flow_after_merge</incoming>
+        <incoming>flow_after_merge_exam</incoming>
+        <outgoing>flow_records_details</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_fetch_details" name="detailFetcher(sessionId)">
+        <incoming>flow_records_details</incoming>
+        <outgoing>flow_details_decision</outgoing>
+      </node>
+      <node xmi:type="uml:DecisionNode" xmi:id="node_metadata_decision" name="Hook appendResponseMetadata">
+        <incoming>flow_details_decision</incoming>
+        <outgoing>flow_metadata_normal</outgoing>
+        <outgoing>flow_metadata_exam</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_metadata_normal" name="NormalTemplate.appendResponseMetadata()">
+        <ownedComment xmi:id="cmt_metadata_normal" body="Agrega session_type 'normal' a la respuesta detallada."/>
+        <incoming>flow_metadata_normal</incoming>
+        <outgoing>flow_metadata_merge</outgoing>
+      </node>
+      <node xmi:type="uml:OpaqueAction" xmi:id="node_metadata_exam" name="ExamTemplate.appendResponseMetadata()">
+        <ownedComment xmi:id="cmt_metadata_exam" body="Incluye exam_metadata con título, duración y modo estricto."/>
+        <incoming>flow_metadata_exam</incoming>
+        <outgoing>flow_metadata_merge</outgoing>
+      </node>
+      <node xmi:type="uml:MergeNode" xmi:id="node_metadata_merge" name="Respuesta enriquecida">
+        <incoming>flow_metadata_merge</incoming>
+        <incoming>flow_metadata_merge_exam</incoming>
+        <outgoing>flow_merge_final</outgoing>
+      </node>
+      <node xmi:type="uml:ActivityFinalNode" xmi:id="node_template_final" name="Fin">
+        <incoming>flow_merge_final</incoming>
+      </node>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_init_resolve" source="node_template_init" target="node_resolve_template"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_resolve_create" source="node_resolve_template" target="node_normalize"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_normalize_identifiers" source="node_normalize" target="node_identifiers"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_identifiers_date" source="node_identifiers" target="node_validate_date"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_date_professor" source="node_validate_date" target="node_validate_professor"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_professor_group" source="node_validate_professor" target="node_fetch_group"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_group_assignment" source="node_fetch_group" target="node_ensure_assignment"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_assignment_duplicate" source="node_ensure_assignment" target="node_ensure_duplicate"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_duplicate_decision" source="node_ensure_duplicate" target="node_template_decision"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_decision_normal" name="normal" source="node_template_decision" target="node_normal_specific">
+        <guard xmi:type="uml:LiteralString" xmi:id="guard_normal" value="session_type === 'normal'"/>
+      </edge>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_decision_exam" name="exam" source="node_template_decision" target="node_exam_specific">
+        <guard xmi:type="uml:LiteralString" xmi:id="guard_exam" value="session_type === 'exam'"/>
+      </edge>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_normal_merge" source="node_normal_specific" target="node_after_specific"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_exam_merge" source="node_exam_specific" target="node_after_specific"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_merge_payload" source="node_after_specific" target="node_build_payload"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_payload_entity" source="node_build_payload" target="node_entity_validate"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_entity_insert" source="node_entity_validate" target="node_insert_session"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_insert_records" source="node_insert_session" target="node_handle_records"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_records_decision" source="node_handle_records" target="node_after_records_decision"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_after_normal" name="normal" source="node_after_records_decision" target="node_after_normal">
+        <guard xmi:type="uml:LiteralString" xmi:id="guard_after_normal" value="Template === Normal"/>
+      </edge>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_after_exam" name="exam" source="node_after_records_decision" target="node_after_exam">
+        <guard xmi:type="uml:LiteralString" xmi:id="guard_after_exam" value="Template === Exam"/>
+      </edge>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_after_merge" source="node_after_normal" target="node_after_records_merge"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_after_merge_exam" source="node_after_exam" target="node_after_records_merge"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_records_details" source="node_after_records_merge" target="node_fetch_details"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_details_decision" source="node_fetch_details" target="node_metadata_decision"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_metadata_normal" name="normal" source="node_metadata_decision" target="node_metadata_normal">
+        <guard xmi:type="uml:LiteralString" xmi:id="guard_metadata_normal" value="Template === Normal"/>
+      </edge>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_metadata_exam" name="exam" source="node_metadata_decision" target="node_metadata_exam">
+        <guard xmi:type="uml:LiteralString" xmi:id="guard_metadata_exam" value="Template === Exam"/>
+      </edge>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_metadata_merge" source="node_metadata_normal" target="node_metadata_merge"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_metadata_merge_exam" source="node_metadata_exam" target="node_metadata_merge"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="flow_merge_final" source="node_metadata_merge" target="node_template_final"/>
+    </packagedElement>
+  </uml:Model>
+</XMI>
